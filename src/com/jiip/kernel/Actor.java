@@ -7,12 +7,13 @@ package com.jiip.kernel;
  * @author simone
  *
  */
-public class CompositeEntity extends Entity {
+public abstract class Actor extends PtolemyObj
+{
 
 	/**
 	 * 
 	 */
-	public CompositeEntity() {
+	public Actor() {
 		// TODO Auto-generated constructor stub
 	}
 

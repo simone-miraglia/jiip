@@ -7,7 +7,8 @@ package com.jiip.kernel;
  * @author simone
  *
  */
-public class AtomicActor {
+public class AtomicActor extends Actor
+{
 
 	/**
 	 * 

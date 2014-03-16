@@ -8,31 +8,22 @@ package com.jiip.kernel;
  name is an arbitrary string that identifies the object in the context of
  its container. 
  * @author Simone Miraglia
- * @see NamedObj
+ * @see PtolemyObj
  * 
  */
 public interface Nameable
 {
 	/**
-	 * Returns the NamedObj acting as container, if any.
-	 * @see NamedObj
-	 * @return The container
-	 * */
-	public NamedObj getContainer();
-	
-	
-	/**
-	 * Returns the name of the NamedObj
-	 * @see NamedObj
-	 * @return The name of the NamedObj
+	 * Returns the name of the PtolemyObj
+	 * @see PtolemyObj
+	 * @return The name of the PtolemyObj
 	 * */
 	public String getName();
 	
-	
 	/**
-	 * Set the name of the NamedObj.
-	 * @param name Name of the NamedObj
-	 * @see NamedObj
+	 * Set the name of the PtolemyObj. This must be unique inside the context of its container.
+	 * @param name Name of the PtolemyObj
+	 * @see PtolemyObj
 	 * */
 	public void setName(String name);
 }

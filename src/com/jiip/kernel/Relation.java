@@ -7,7 +7,8 @@ package com.jiip.kernel;
  * @author simone
  *
  */
-public class Relation {
+public class Relation extends PtolemyObj
+{
 
 	/**
 	 * 

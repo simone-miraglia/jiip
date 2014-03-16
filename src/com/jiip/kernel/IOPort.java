@@ -7,7 +7,8 @@ package com.jiip.kernel;
  * @author Simone Miraglia
  *
  */
-public class IOPort extends Port {
+public class IOPort extends Port
+{
 
 	/**
 	 * 

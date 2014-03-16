@@ -7,7 +7,8 @@ package com.jiip.kernel;
  * @author simone
  *
  */
-public class Director {
+public class Director extends Attribute
+{
 
 	/**
 	 * 
