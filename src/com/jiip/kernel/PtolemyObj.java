@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 /**
- * <p>This class implements a PtolemyObj. It's an abstract class which has at least four main concrete objects:
+ * <p>This class implements a PtolemyObj. It is an abstract class which has at least four main concrete objects:
  * Actor, Port, Attribute and Relation. A PtolemyObj can have a containment relationship with another PtolemyObj; furthermore
  * it's defined by a unique name (in the context of the same container, which means two PtolemyObj can have the same name
  * iff are contained in different containers) and a class. </p>
