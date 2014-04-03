@@ -56,6 +56,19 @@ public abstract class PtolemyObj implements Nameable, Exportable, Classable
 	{
 		_name = "";
 		_container = null;
+		_className = "";
+	}
+	
+	/**
+	 * Constructr with name and class
+	 * @param name Name of the object
+	 * @param className class of the object
+	 * */
+	public PtolemyObj(String name, String className)
+	{
+		_name = name;
+		_className = className;
+		_container = null;
 	}
 	
 	/**
@@ -138,14 +151,14 @@ public abstract class PtolemyObj implements Nameable, Exportable, Classable
 	 * */
 	public void addAttribute(Attribute attribute) throws Exception
 	{
-		//First of all, a check is needed to test if the given attribute is already present.
-		Attribute a = _attributeList.get(attribute.getName());
-		
 		/*
+		 * First of all, a check is needed to test if the given attribute is already present.
 		 * No attribute found means the given attribute can be added.
 		 * Otherwise an exception is raised. 
+		 * 
 		 * */
-		if (a == null)
+		/*FIXME: does not work! always get a null ptr exception*/
+		if (!_attributeList.containsKey(((attribute.getName()))))
 		{
 			//Add the attribute
 			_attributeList.put(attribute.getName(), attribute);
@@ -162,24 +175,22 @@ public abstract class PtolemyObj implements Nameable, Exportable, Classable
 	
 	/**
 	 * Remove an attribute from the existing set of attributes.
-	 * @param attribute The attribute you want to remove.
+	 * @param attribute The name of attribute you want to remove.
 	 * @throws Exception If you remove a non-existing attribute
 	 * */
-	public void removeAttribute(Attribute attribute) throws Exception
+	public void removeAttribute(String attribute) throws Exception
 	{
-		//First of all, a check is needed to test if the given attribute is already present.
-		Attribute a = _attributeList.get(attribute.getName());
-		
 		/*
+		 * First of all, a check is needed to test if the given attribute is already present.
 		 * No attribute found means the given attribute can't be removed and an exception is raised.
 		 * Otherwise go ahead removing. 
 		 * */
-		if (a == null)
+		if (!_attributeList.containsKey((attribute)))
 			throw new Exception("Can't remove given attribute. Attribute not found!");
 		else
 		{
 			//Remove the attribute
-			a = _attributeList.remove(attribute.getName());
+			Attribute a = _attributeList.remove(attribute);
 			
 			/*
 			 * If i remove an attribute to this specific PtolemyObj, then i must unset this
