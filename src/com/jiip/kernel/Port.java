@@ -1,6 +1,6 @@
 package com.jiip.kernel;
 
-public abstract class Port extends PtolemyObj
+public abstract class Port extends NamedObj
 {
 	public Port()
 	{

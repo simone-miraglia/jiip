@@ -7,7 +7,7 @@ package com.jiip.kernel;
  * @author simone
  *
  */
-public class Attribute extends PtolemyObj
+public class Attribute extends NamedObj
 {
 	private String _value;
 
@@ -57,5 +57,13 @@ public class Attribute extends PtolemyObj
 	public void setValue(String value)
 	{
 		_value = value;
+	}
+	
+	/**
+	 * 
+	 * */
+	public void export()
+	{
+		/*dummy stuff here*/
 	}
 }

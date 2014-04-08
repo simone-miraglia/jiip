@@ -16,5 +16,10 @@ public class IOPort extends Port
 	public IOPort() {
 		// TODO Auto-generated constructor stub
 	}
+	
+	public void export()
+	{
+		/*dummy stuff here*/
+	}
 
 }

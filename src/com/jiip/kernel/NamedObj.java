@@ -7,15 +7,15 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 /**
- * <p>This class implements a PtolemyObj. It is an abstract class which has at least four main concrete objects:
- * Actor, Port, Attribute and Relation. A PtolemyObj can have a containment relationship with another PtolemyObj; furthermore
- * it's defined by a unique name (in the context of the same container, which means two PtolemyObj can have the same name
+ * <p>This class implements a NamedObj. It is an abstract class which has at least four main concrete objects:
+ * Actor, Port, Attribute and Relation. A NamedObj can have a containment relationship with another NamedObj; furthermore
+ * it's defined by a unique name (in the context of the same container, which means two NamedObj can have the same name
  * iff are contained in different containers) and a class. </p>
  * 
  * <p>
- * Since there is a containment relationship, a list of contained PtolemyObj should be needed in this class.
- * Truth is not every concrete PtolemyObj can have other contained PtolemyObj; so we explicit represent a list of contained
- * object only where is needed. Since every PtolemyObj has attributes, a <i>list of attributes</i> is defined at this level.
+ * Since there is a containment relationship, a list of contained NamedObj should be needed in this class.
+ * Truth is not every concrete NamedObj can have other contained NamedObj; so we explicit represent a list of contained
+ * object only where is needed. Since every NamedObj has attributes, a <i>list of attributes</i> is defined at this level.
  * 
  * </p>
  * @author Simone Miraglia
@@ -24,7 +24,7 @@ import java.util.Hashtable;
  * @see Attribute
  * @see Relation
  */
-public abstract class PtolemyObj implements Nameable, Exportable, Classable
+public abstract class NamedObj implements Nameable, Exportable, Classable
 {
 
 	/**
@@ -41,7 +41,7 @@ public abstract class PtolemyObj implements Nameable, Exportable, Classable
 	/**
 	 * Specifies the object which contains this.
 	 * */
-	private PtolemyObj _container;
+	private NamedObj _container;
 	
 	/**
 	 * A container for attributes. Hashtable should grant fast access to attributes.
@@ -52,7 +52,7 @@ public abstract class PtolemyObj implements Nameable, Exportable, Classable
 	/**
 	 * Default constructor.
 	 * */
-	public PtolemyObj()
+	public NamedObj()
 	{
 		_name = "";
 		_container = null;
@@ -64,7 +64,7 @@ public abstract class PtolemyObj implements Nameable, Exportable, Classable
 	 * @param name Name of the object
 	 * @param className class of the object
 	 * */
-	public PtolemyObj(String name, String className)
+	public NamedObj(String name, String className)
 	{
 		_name = name;
 		_className = className;
@@ -72,9 +72,9 @@ public abstract class PtolemyObj implements Nameable, Exportable, Classable
 	}
 	
 	/**
-	 * Returns the name of the PtolemyObj. Implements Nameable getName()
+	 * Returns the name of the NamedObj. Implements Nameable getName()
 	 * @see Nameable
-	 * @return The name of the PtolemyObj
+	 * @return The name of the NamedObj
 	 * */
 	public String getName()
 	{
@@ -82,24 +82,24 @@ public abstract class PtolemyObj implements Nameable, Exportable, Classable
 	}
 
 	/**
-	 * Set the name of the PtolemyObj. This must be unique inside the context of its container.
+	 * Set the name of the NamedObj. This must be unique inside the context of its container.
 	 * Implements Nameable setName()
-	 * @param name Name of the PtolemyObj
+	 * @param name Name of the NamedObj
 	 * @see Nameable
 	 * */
 	public void setName(String name)
 	{
 		/*
-		 * TODO: a routine is needed to check if the given name is unique inside this PtolemyObj container.
+		 * TODO: a routine is needed to check if the given name is unique inside this NamedObj container.
 		 * If name is not unique, an exception should be thrown
 		 * */
 		_name = name;
 	}
 	
 	/**
-	 * Returns the class name of the PtolemyObj. Implements Classable getClassName().
+	 * Returns the class name of the NamedObj. Implements Classable getClassName().
 	 * @see Classable
-	 * @return The name of the PtolemyObj
+	 * @return The name of the NamedObj
 	 * */
 	public String getClassName()
 	{
@@ -107,9 +107,9 @@ public abstract class PtolemyObj implements Nameable, Exportable, Classable
 	}
 	
 	/**
-	 * Set the class name of the PtolemyObj. This must should be a valid class name inside Ptolemy.
+	 * Set the class name of the NamedObj. This must should be a valid class name inside Ptolemy.
 	 * Implements Classable setClassName()
-	 * @param name Class name of the PtolemyObj
+	 * @param name Class name of the NamedObj
 	 * @see Classable
 	 * */
 	public void setClassName(String name)
@@ -121,22 +121,22 @@ public abstract class PtolemyObj implements Nameable, Exportable, Classable
 	}
 
 	/**
-	 * Every PtolemyObj is potentially contained in another PtolemyObj. 
-	 * Returns its container. If this is a top level PtolemyObj, null value is returned.
-	 * @return The PtolemyObj container
+	 * Every NamedObj is potentially contained in another NamedObj. 
+	 * Returns its container. If this is a top level NamedObj, null value is returned.
+	 * @return The NamedObj container
 	 * */
-	public PtolemyObj getContainer()
+	public NamedObj getContainer()
 	{
 		return _container;
 	}
 	
 	/**
-	 * Every PtolemyObj is potentially contained in another PtolemyObj. 
+	 * Every NamedObj is potentially contained in another NamedObj. 
 	 * Set its container. Null value means no container. The scope is protected because
 	 * this function is expected to be call indirectly other classes. 
 	 * @param container Parent container of this object
 	 * */
-	protected void setContainer(PtolemyObj container)
+	protected void setContainer(NamedObj container)
 	{
 		/*
 		 * TODO: should i be able to change container?
@@ -164,7 +164,7 @@ public abstract class PtolemyObj implements Nameable, Exportable, Classable
 			_attributeList.put(attribute.getName(), attribute);
 			
 			/*
-			 * If i add an attribute to this specific PtolemyObj, then i must set this
+			 * If i add an attribute to this specific NamedObj, then i must set this
 			 * object to be its container
 			*/
 			attribute.setContainer(this);
@@ -193,7 +193,7 @@ public abstract class PtolemyObj implements Nameable, Exportable, Classable
 			Attribute a = _attributeList.remove(attribute);
 			
 			/*
-			 * If i remove an attribute to this specific PtolemyObj, then i must unset this
+			 * If i remove an attribute to this specific NamedObj, then i must unset this
 			 * object to be its container
 			*/
 			a.setContainer(null);

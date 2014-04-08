@@ -13,5 +13,6 @@ package com.jiip.kernel;
 
 public interface Exportable
 {
+	public abstract void export();
 
 }
