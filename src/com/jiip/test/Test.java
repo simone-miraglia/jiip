@@ -8,7 +8,7 @@ public class Test {
 	}
 
 	/**
-	 * @param args
+	 * @param args command line parameters (none expected)
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception
