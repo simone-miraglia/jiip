@@ -12,7 +12,7 @@ public class Attribute extends NamedObj
 	private String _value;
 
 	/**
-	 * Defautl constructor
+	 * Defautl constructor without parameters
 	 */
 	public Attribute()
 	{
