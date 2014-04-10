@@ -13,8 +13,20 @@ public class IOPort extends Port
 	/**
 	 * 
 	 */
-	public IOPort() {
-		// TODO Auto-generated constructor stub
+	public IOPort()
+	{
+		
+	}
+	
+	
+	public boolean isInput()
+	{
+		return true;
+	}
+	
+	public boolean isOutput()
+	{
+		return false;
 	}
 	
 	public void export()

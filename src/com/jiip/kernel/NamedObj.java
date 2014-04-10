@@ -43,11 +43,40 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	 * */
 	private NamedObj _container;
 	
+	/*
+	 * TODO: is a collection of contained NamedObj needed? 
+	 * */
+	
+	
 	/**
-	 * A container for attributes. Hashtable should grant fast access to attributes.
-	 * Key value is the attribute name itself.
+	 * A container for attributes. Search by name.
+	 * */
+	/*
+	 * Hashtable should grant fast access to attributes. Key value is the attribute name itself.
 	 * */
 	private Hashtable<String, Attribute> _attributeList;
+	
+	
+	protected void add(NamedObj obj)
+	{
+		
+	}
+	
+	protected void remove(NamedObj obj)
+	{
+		
+	}
+	
+	protected void get(NamedObj obj)
+	{
+		
+	}
+	
+	protected ArrayList<NamedObj> getList(NamedObj obj)
+	{
+		return null;
+	}
+	
 	
 	/**
 	 * Default constructor.
@@ -60,7 +89,7 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	}
 	
 	/**
-	 * Constructr with name and class
+	 * Constructor with name and class
 	 * @param name Name of the object
 	 * @param className class of the object
 	 * */
@@ -175,22 +204,22 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	
 	/**
 	 * Remove an attribute from the existing set of attributes.
-	 * @param attribute The name of attribute you want to remove.
+	 * @param name The name of attribute you want to remove.
 	 * @throws Exception If you remove a non-existing attribute
 	 * */
-	public void removeAttribute(String attribute) throws Exception
+	public void removeAttribute(String name) throws Exception
 	{
 		/*
 		 * First of all, a check is needed to test if the given attribute is already present.
 		 * No attribute found means the given attribute can't be removed and an exception is raised.
 		 * Otherwise go ahead removing. 
 		 * */
-		if (!_attributeList.containsKey((attribute)))
+		if (!_attributeList.containsKey((name)))
 			throw new Exception("Can't remove given attribute. Attribute not found!");
 		else
 		{
 			//Remove the attribute
-			Attribute a = _attributeList.remove(attribute);
+			Attribute a = _attributeList.remove(name);
 			
 			/*
 			 * If i remove an attribute to this specific NamedObj, then i must unset this
@@ -223,7 +252,7 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	 * @see ArrayList
 	 * @return The set of attributes
 	 * */
-	public ArrayList<Attribute> getAttributeList()
+	public ArrayList<Attribute> attributeList()
 	{
 		return new ArrayList<Attribute> (_attributeList.values());
 	}

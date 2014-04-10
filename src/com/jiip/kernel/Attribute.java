@@ -52,7 +52,7 @@ public class Attribute extends NamedObj
 	}
 
 	/**
-	 * @param value the _value to set
+	 * @param value attribute value to set
 	 */
 	public void setValue(String value)
 	{
