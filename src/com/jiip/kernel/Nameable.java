@@ -23,7 +23,8 @@ public interface Nameable
 	/**
 	 * Set the name of the PtolemyObj. This must be unique inside the context of its container.
 	 * @param name Name of the PtolemyObj
+	 * @throws Exception if name it is not unique
 	 * @see PtolemyObj
 	 * */
-	public void setName(String name);
+	public void setName(String name) throws Exception;
 }

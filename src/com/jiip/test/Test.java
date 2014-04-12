@@ -13,13 +13,19 @@ public class Test {
 	 */
 	public static void main(String[] args) throws Exception
 	{
-		Attribute a = new Attribute("foo", "class.foo");
-		a.setValue("132.5");
-		System.out.println(a.getName() + ", " + a.getClassName() + ", " + a.getValue());
+		Attribute top = new Attribute("Top", "class.main");
+		top.setValue("param = 10;");
 		
-		Attribute b = new Attribute ("x", "class.x");
-		System.out.println(b.getName());
-		a.addAttribute(b);
+		Attribute a1 = new Attribute ("A1", "class.x");
+		top.addAttribute(a1);
+		
+		Attribute a2 = new Attribute ("A2", "class.y");
+		top.addAttribute(a2);
+		
+		Attribute b = new Attribute ("A1", "class.b");
+		a1.addAttribute(b);
+		//a1.addAttribute(a2);
+		
 	}
 
 }
