@@ -349,4 +349,9 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	{
 		return (ArrayList<Attribute>) _attributeList.values();
 	}
+	
+	public ArrayList<NamedObj> containedList()
+	{
+		return new ArrayList<NamedObj>(_containedObjList.values());
+	}
 }

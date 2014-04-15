@@ -10,22 +10,31 @@ package com.jiip.kernel;
 public class IOPort extends Port
 {
 
-	/**
-	 * 
-	 */
 	public IOPort()
 	{
-		
+		super();
+	}
+	
+	/**
+	 * Constructor with name and class
+	 * @param name Name of the object
+	 * @param className class of the object
+	 * */
+	public IOPort(String name, String className)
+	{
+		super(name, className);
 	}
 	
 	
 	public boolean isInput()
 	{
+		//TODO
 		return true;
 	}
 	
 	public boolean isOutput()
 	{
+		//TODO
 		return false;
 	}
 	

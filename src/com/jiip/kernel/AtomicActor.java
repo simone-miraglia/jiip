@@ -11,11 +11,21 @@ public class AtomicActor extends Entity implements Executable
 {
 
 	/**
-	 * 
-	 */
+	 * Default constructor.
+	 * */
 	public AtomicActor()
 	{
-		// TODO Auto-generated constructor stub
+		super();
+	}
+	
+	/**
+	 * Constructor with name and class
+	 * @param name Name of the object
+	 * @param className class of the object
+	 * */
+	public AtomicActor(String name, String className)
+	{
+		super(name, className);
 	}
 	
 	/**

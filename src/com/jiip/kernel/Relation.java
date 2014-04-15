@@ -4,6 +4,7 @@
 package com.jiip.kernel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * @author simone
@@ -11,13 +12,15 @@ import java.util.ArrayList;
  */
 public class Relation extends NamedObj
 {
-
+	private HashMap <String, ? extends NamedObj> _portList;
+	
 	/**
 	 * Default constructor.
 	 * */
 	public Relation()
 	{
 		super();
+		_portList = new HashMap <String, Port>();
 	}
 	
 	/**
@@ -28,47 +31,66 @@ public class Relation extends NamedObj
 	public Relation(String name, String className)
 	{
 		super(name, className);
+		_portList = new HashMap <String, Port>();
 	}
 	
 	/**
 	 * Add a new port to the set of linked ports. 
-	 * @param port The port you want to add.
+	 * @param p The port you want to add.
 	 * @throws Exception If you add an existing port
 	 * */
+	/*@SuppressWarnings("unchecked")
 	public void addPort(Port p) throws Exception
 	{
-		/* remember: setContainer() */
+		add(p, (HashMap<String, NamedObj>) _portList);
 	}
-	
+	*/
 	/**
 	 * Remove a port from the existing set of linked ports.
 	 * @param name The name of the port you want to remove.
 	 * @throws Exception If you remove a non-existing port
 	 * */
-	public void removePort(String name) throws Exception
+/*	@SuppressWarnings("unchecked")
+	public Port removePort(String name) throws Exception
 	{
-		/*remember: unset container*/
+		return (Port) remove(name, (HashMap<String, NamedObj>) _portList);
 	}
-	
+*/
 	/**
 	 * Get a Port from the existing set of linked ports
 	 * @param name Port name
 	 * @return Port with the given name, null otherwise
 	 * @throws Exception if there is no Port with the given name
 	 * */
+/*	@SuppressWarnings("unchecked")
 	public Port getPort(String name) throws Exception
 	{
-		return null;
+		return (Port) get(name, (HashMap<String, NamedObj>) _portList);
 	}
-
+*/
 	/**
 	 * Returns the set of linked ports as an ArrayList
 	 * @return ArrayList linked port list
 	 * */
+	@SuppressWarnings("unchecked")
 	public ArrayList<Port> linkedPortList()
 	{
-		return null;
+		return (ArrayList<Port>) _portList.values();
 	}
+	
+	/**
+	 * Returns the set of linked ports as a HashMap
+	 * @return HashMap linked port hashmap
+	 * */
+	/*
+	 * do not like this solution..it is just for port link/unlink
+	 * */
+	@SuppressWarnings("unchecked")
+	public HashMap<String, Port> getLinkedPortHashMap()
+	{
+		return (HashMap<String, Port>) _portList;
+	}
+	
 
 	/**
 	 * 

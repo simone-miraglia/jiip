@@ -4,6 +4,8 @@
 package com.jiip.kernel;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 
 /**
  * @author simone
@@ -11,12 +13,15 @@ import java.util.ArrayList;
  */
 public abstract class Entity extends NamedObj
 {
+	private HashMap <String, ? extends NamedObj> _portList;
+	
 	/**
 	 * Default constructor.
 	 * */
 	public Entity()
 	{
 		super();
+		_portList = new HashMap <String, Port>();
 	}
 	
 	/**
@@ -27,8 +32,8 @@ public abstract class Entity extends NamedObj
 	public Entity(String name, String className)
 	{
 		super(name, className);
+		_portList = new HashMap <String, Port>();
 	}
-	
 	
 	/**
 	 * Returns a boolean value indicating whether this Entity is atomic or not
@@ -44,12 +49,13 @@ public abstract class Entity extends NamedObj
 	
 	/**
 	 * Add a new port to the set of ports. 
-	 * @param port The port you want to add.
+	 * @param p The port you want to add.
 	 * @throws Exception If you add an existing port
 	 * */
-	public void addPort(Port port) throws Exception
+	@SuppressWarnings("unchecked")
+	public void addPort(Port p) throws Exception
 	{
-		/* remember: setContainer() */
+		add(p, (HashMap<String, NamedObj>) _portList);
 	}
 	
 	/**
@@ -57,9 +63,10 @@ public abstract class Entity extends NamedObj
 	 * @param name The name of the port you want to remove.
 	 * @throws Exception If you remove a non-existing port
 	 * */
-	public void removePort(String name) throws Exception
+	@SuppressWarnings("unchecked")
+	public Port removePort(String name) throws Exception
 	{
-		/*remember: unset container*/
+		return (Port) remove (name, (HashMap<String, NamedObj>) _portList);
 	}
 	
 	/**
@@ -68,18 +75,20 @@ public abstract class Entity extends NamedObj
 	 * @return Port with the given name, null otherwise
 	 * @throws Exception if there is no Port with the given name
 	 * */
+	@SuppressWarnings("unchecked")
 	public Port getPort(String name) throws Exception
 	{
-		return null;
+		return (Port) get(name, (HashMap<String, NamedObj>) _portList);
 	}
 
 	/**
 	 * Returns the set of Ports as an ArrayList
 	 * @return ArrayList Port list
 	 * */
+	@SuppressWarnings("unchecked")
 	public ArrayList<Port> portList()
 	{
-		return null;
+		return new ArrayList<Port>( (Collection<? extends Port>) _portList.values());
 	}
 	
 	/**

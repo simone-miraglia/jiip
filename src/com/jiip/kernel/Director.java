@@ -11,10 +11,21 @@ public class Director extends Attribute implements Executable
 {
 
 	/**
-	 * 
-	 */
-	public Director() {
-		// TODO Auto-generated constructor stub
+	 * Default constructor.
+	 * */
+	public Director()
+	{
+		super();
+	}
+	
+	/**
+	 * Constructor with name and class
+	 * @param name Name of the object
+	 * @param className class of the object
+	 * */
+	public Director(String name, String className)
+	{
+		super(name, className);
 	}
 
 }

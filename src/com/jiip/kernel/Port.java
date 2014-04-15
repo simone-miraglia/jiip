@@ -1,15 +1,18 @@
 package com.jiip.kernel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public abstract class Port extends NamedObj
 {
+	private HashMap <String, Relation> _linkedRelList;
 	/**
 	 * Default constructor.
 	 * */
 	public Port()
-	{
+	{		
 		super();
+		_linkedRelList = new HashMap <String, Relation>();
 	}
 	
 	/**
@@ -20,6 +23,7 @@ public abstract class Port extends NamedObj
 	public Port(String name, String className)
 	{
 		super(name, className);
+		_linkedRelList = new HashMap <String, Relation>();
 	}
 	
 	/**
@@ -28,8 +32,24 @@ public abstract class Port extends NamedObj
 	 * @throws Exception If you link twice with the same relation
 	 * */
 	public void link(Relation r) throws Exception
-	{
-		/* remember: setContainer() */
+	{		
+		/*
+		 * First check whether relation is already contained.
+		 * Cannot link twice with the same relation
+		 * */
+		Relation t = _linkedRelList.get(r.getName());
+		if (t == null)
+		{
+			/*
+			 * If it is unique, add relation to list
+			 * and set this port to be in the relation
+			 * */
+		
+			_linkedRelList.put(r.getName(), r);
+			r.getLinkedPortHashMap().put(this.getName(), this);
+		}
+		else
+			throw new Exception("DuplicateNameException: cannot add a port to the same relation.");
 	}
 	
 	/**
@@ -39,7 +59,25 @@ public abstract class Port extends NamedObj
 	 * */
 	public void unlink(Relation r) throws Exception
 	{
-		/*remember: unset container*/
+		/*TODO: do not know if needed or should be implemented in Relation*/
+		
+		/*
+		 * First check whether port is contained in relation r
+		 * Cannot unlink from a Port non contained in a relation
+		 * */
+		Port t = r.getLinkedPortHashMap().get(this.getName());
+		if (t != null)
+		{
+			/*
+			 * If Port exists, then unlink
+			 * remove relation from to linked relation list
+			 * and remove port form relation linked port list
+			 * */
+			_linkedRelList.remove(r.getName());
+			r.getLinkedPortHashMap().remove(this.getName());
+		}
+		else
+			throw new Exception("DuplicateNameException: port non contained in given relation.");
 	}
 	
 	/**
@@ -50,6 +88,7 @@ public abstract class Port extends NamedObj
 	 * */
 	public Relation getRelation(String name) throws Exception
 	{
+		//TODO
 		return null;
 	}
 
@@ -59,6 +98,7 @@ public abstract class Port extends NamedObj
 	 * */
 	public ArrayList<Relation> linkedRelationList()
 	{
+		//TODO
 		return null;
 	}
 }
