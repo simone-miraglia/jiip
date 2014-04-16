@@ -62,8 +62,9 @@ public class Attribute extends NamedObj
 	/**
 	 * 
 	 * */
+	/*
 	public void export()
 	{
-		/*dummy stuff here*/
 	}
+*/
 }

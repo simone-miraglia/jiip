@@ -93,12 +93,10 @@ public abstract class Entity extends NamedObj
 	
 	/**
 	 * 
-	 * */
+	 * *//*
 	public void export()
 	{
-		/*
-		 * dummy stuff
-		 * */
-	}
+		
+	}*/
 
 }

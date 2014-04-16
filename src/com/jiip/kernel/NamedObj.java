@@ -5,6 +5,14 @@ package com.jiip.kernel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * <p>This class implements a NamedObj. It is an abstract class which has at least four main concrete objects:
@@ -350,8 +358,121 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 		return (ArrayList<Attribute>) _attributeList.values();
 	}
 	
+	/**
+	 * Returns the set of contained NamedObjs as an ArrayList
+	 * @see ArrayList
+	 * @return The set of contained NamedObj
+	 * */
 	public ArrayList<NamedObj> containedList()
 	{
 		return new ArrayList<NamedObj>(_containedObjList.values());
+	}
+	
+	
+	/**
+	 * TODO
+	 * **/
+	private Element exportObj(NamedObj obj, Document xml)
+	{
+		//TODO improvements...
+		
+		/*
+		 * create an xml tag, depending of the type of
+		 * the given NamedObj
+		 * */
+		Element root;
+		if(obj instanceof Attribute)
+		{
+			root = xml.createElement("property");
+			/*
+			 * if obj is an Attribute, must add
+			 * also attribute value iff obj is not
+			 * a director (directors have no value)
+			 * FIXME director still have value!
+			 * */
+			if (obj instanceof Director == false)
+			{
+				Attribute a = (Attribute)obj;
+				root.setAttribute("value", a.getValue());
+			}
+		}
+		else if(obj instanceof Entity)
+			root = xml.createElement("entity");
+		else if (obj instanceof Port)
+			root = xml.createElement("port");
+		else /*obj instanceof Relation*/
+			root = xml.createElement("relation");
+		
+		root.setAttribute("class", obj.getClassName());
+		root.setAttribute("name", obj.getName());
+		
+		/*
+		 * foreach contained obj, call recursively
+		 * this function, adding the result
+		 * */
+		for(Iterator<NamedObj> child = obj.containedList().iterator(); child.hasNext();)
+			root.appendChild(exportObj(child.next(), xml));
+		/*
+		 * if obj is a CompositeEntity, then must add a <link>
+		 * for each port-relation link
+		 * */
+		if (obj instanceof CompositeEntity)
+		{
+			CompositeEntity c = (CompositeEntity)obj;
+			for(Iterator<Relation> k = c.relationList().iterator(); k.hasNext();)
+			{
+				/*
+				 * get a relation
+				 * */
+				Relation r = k.next(); 
+				for(Iterator<Port> j = r.linkedPortList().iterator(); j.hasNext();)
+				{
+					/*
+					 * get a linked port from that relation
+					 * */
+					Port p = j.next();
+					/*
+					 * create a link tag and add to root
+					 * */
+					Element link = xml.createElement("link");
+					link.setAttribute("relation", r.getName());
+					link.setAttribute("port", p.getName());
+					root.appendChild(link);
+				}
+			}
+		}
+		
+		/*
+		 * finally return tag to caller
+		 * */
+		return root;
+	}
+	
+	/**
+	 * TODO
+	 * */
+	public Document exportMoML()
+	{
+		try 
+		{
+			/*
+			 * Creates a new XML document (MoML)
+			 * */
+			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+			Document MoML = docBuilder.newDocument();
+			
+			/*
+			 * launch exportObj of this NamedObj and add the result to the MoML
+			 * */
+			MoML.appendChild(exportObj(this, MoML));
+			return MoML;
+			
+		} 
+		catch (ParserConfigurationException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

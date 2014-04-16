@@ -4,6 +4,7 @@
 package com.jiip.kernel;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 /**
@@ -75,7 +76,7 @@ public class Relation extends NamedObj
 	@SuppressWarnings("unchecked")
 	public ArrayList<Port> linkedPortList()
 	{
-		return (ArrayList<Port>) _portList.values();
+		return new ArrayList<Port>((Collection<? extends Port>) _portList.values());
 	}
 	
 	/**
@@ -94,10 +95,10 @@ public class Relation extends NamedObj
 
 	/**
 	 * 
-	 * */
+	 * *//*
 	public void export()
 	{
-		/*dummy stuff here*/
-	}
+
+	}*/
 
 }

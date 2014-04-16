@@ -54,11 +54,13 @@ public class CompositeActor extends CompositeEntity implements Executable
 	public void addDirector(Director d) throws Exception
 	{
 		_director = d;
+		this.addAttribute(new Attribute(d.getName(), d.getClassName()));
 	}
 	
 	public Director removeDirector() throws Exception
 	{
-		Director d = _director;
+		
+		Director d = (Director) this.removeAttribute(_director.getName());
 		_director = null;
 		return d;
 	}

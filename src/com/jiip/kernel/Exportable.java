@@ -3,6 +3,8 @@
  */
 package com.jiip.kernel;
 
+import org.w3c.dom.Document;
+
 /**
  * This is an interface for objects that can be exported. 
  * TODO: additional description
@@ -13,6 +15,6 @@ package com.jiip.kernel;
 
 public interface Exportable
 {
-	public abstract void export();
+	public abstract Document exportMoML();
 
 }

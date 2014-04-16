@@ -10,9 +10,11 @@ package com.jiip.kernel;
 public class IOPort extends Port
 {
 
-	public IOPort()
+	public IOPort() throws Exception
 	{
 		super();
+		this.addAttribute(new Attribute("input", ""));
+		this.addAttribute(new Attribute("output", ""));
 	}
 	
 	/**
@@ -37,10 +39,10 @@ public class IOPort extends Port
 		//TODO
 		return false;
 	}
-	
+	/*
 	public void export()
 	{
-		/*dummy stuff here*/
-	}
 
+	}
+*/
 }
