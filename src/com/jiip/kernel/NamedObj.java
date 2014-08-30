@@ -206,13 +206,24 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	{
 		/*
 		 * Just lookup in the list. Null value returned means there is
-		 * no NamedObj with the given key (so raise an exception).
+		 * no NamedObj with the given key.
 		 * */
-		NamedObj obj = list.get(key);
-		if (obj != null)
-			return obj;
+		if (list.containsKey(key))
+			return list.get(key);
 		else
-			throw new Exception("No item found.");
+			throw new Exception("Unable to get NamedObj. It does not exist.");
+	}
+	
+	/**
+	 * Check if a NamedObj is contained (without removing it)
+	 * @param key name of the NamedObj you want to retrieve
+	 * @param list the container
+	 * @return the searched NamedObj
+	 * @throws Exception if there is no element with such key inside the container
+	 * */
+	protected boolean contains(String key, HashMap<String, NamedObj> list)
+	{
+		return list.containsKey(key);
 	}
 	
 	/**
@@ -348,6 +359,18 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	}
 	
 	/**
+	 * 
+	 * @param name
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public boolean hasAttribute(String name)
+	{
+		return contains(name, (HashMap<String, NamedObj>) _attributeList);
+	}
+	
+	
+	/**
 	 * Returns the set of attributes as an ArrayList
 	 * @see ArrayList
 	 * @return The set of attributes
@@ -449,8 +472,8 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	}
 	
 	/**
-	 * TODO
-	 * */
+	 * 
+	 */
 	public Document exportMoML()
 	{
 		try 

@@ -13,7 +13,7 @@ import java.util.HashMap;
  */
 public class Relation extends NamedObj
 {
-	private HashMap <String, ? extends NamedObj> _portList;
+	private HashMap <String, Port> _portList;
 	
 	/**
 	 * Default constructor.
@@ -40,12 +40,15 @@ public class Relation extends NamedObj
 	 * @param p The port you want to add.
 	 * @throws Exception If you add an existing port
 	 * */
-	/*@SuppressWarnings("unchecked")
 	public void addPort(Port p) throws Exception
 	{
-		add(p, (HashMap<String, NamedObj>) _portList);
+		/*
+		 * port is saved as container.name to avoid collision due to 
+		 * multiple name ports contained in different entites
+		 * */
+		_portList.put(p.getContainer().getName() + "." + p.getName(), p);
 	}
-	*/
+	
 	/**
 	 * Remove a port from the existing set of linked ports.
 	 * @param name The name of the port you want to remove.

@@ -5,7 +5,6 @@ public class CompositeActor extends CompositeEntity implements Executable
 	/**
 	 * 
 	 * */
-	Director _director;
 	
 	/**
 	 * Default constructor.
@@ -13,7 +12,6 @@ public class CompositeActor extends CompositeEntity implements Executable
 	public CompositeActor()
 	{
 		super();
-		_director = null;
 	}
 	
 	/**
@@ -24,7 +22,6 @@ public class CompositeActor extends CompositeEntity implements Executable
 	public CompositeActor(String name, String className)
 	{
 		super(name, className);
-		_director = null;
 	}
 	
 	/**
@@ -35,33 +32,5 @@ public class CompositeActor extends CompositeEntity implements Executable
 	public boolean isAtomic()
 	{
 		return false;
-	}
-
-	/**
-	 * Implements isOpaque() of Entity class.
-	 * @see Entity
-	 * @return True wheter this CompositeEntity has a director, false otherwise
-	 * */
-	public boolean isOpaque()
-	{
-		return _director != null;
-	}
-	
-	/**
-	 * @throws Exception 
-	 * 
-	 * */
-	public void addDirector(Director d) throws Exception
-	{
-		_director = d;
-		this.addAttribute(new Attribute(d.getName(), d.getClassName()));
-	}
-	
-	public Director removeDirector() throws Exception
-	{
-		
-		Director d = (Director) this.removeAttribute(_director.getName());
-		_director = null;
-		return d;
 	}
 }

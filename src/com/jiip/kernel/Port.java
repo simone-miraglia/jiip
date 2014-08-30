@@ -46,7 +46,8 @@ public abstract class Port extends NamedObj
 			 * */
 		
 			_linkedRelList.put(r.getName(), r);
-			r.getLinkedPortHashMap().put(this.getName(), this);
+			r.addPort(this);
+			//r.getLinkedPortHashMap().put(this.getName(), this);
 		}
 		else
 			throw new Exception("DuplicateNameException: cannot add a port to the same relation.");

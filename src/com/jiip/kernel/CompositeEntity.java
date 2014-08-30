@@ -71,10 +71,10 @@ public abstract class CompositeEntity extends Entity
 	 * Get an Entity from the existing set of entities
 	 * @param name Entity name
 	 * @return Entity with the given name, null otherwise
-	 * @throws Exception if there is no Entity with the given name
+	 * @throws Exception 
 	 * */
 	@SuppressWarnings("unchecked")
-	public Entity getEntity(String name) throws Exception
+	public Entity getEntity(String name) throws Exception 
 	{
 		return (Entity) get(name, (HashMap<String, NamedObj>) _entityList);
 	}
@@ -115,10 +115,10 @@ public abstract class CompositeEntity extends Entity
 	 * Get a Relation from the existing set of relations
 	 * @param name Relation name
 	 * @return Relation with the given name
-	 * @throws Exception if there is no Relation with the given name
+	 * @throws Exception 
 	 * */
 	@SuppressWarnings("unchecked")
-	public Relation getRelation(String name) throws Exception
+	public Relation getRelation(String name) throws Exception 
 	{
 		return (Relation) get(name, (HashMap<String, NamedObj>) _relList);
 	}

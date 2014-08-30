@@ -18,10 +18,14 @@ public abstract class Entity extends NamedObj
 	/**
 	 * Default constructor.
 	 * */
+	
+	Director _director;
+	
 	public Entity()
 	{
 		super();
 		_portList = new HashMap <String, Port>();
+		_director = null;
 	}
 	
 	/**
@@ -45,7 +49,10 @@ public abstract class Entity extends NamedObj
 	 * Returns a boolean value indicating whether this Entity has a director or not
 	 * @return True if entity has a director, false otherwise
 	 * */
-	public abstract boolean isOpaque();
+	public boolean isOpaque()
+	{
+		return _director != null;
+	}
 	
 	/**
 	 * Add a new port to the set of ports. 
@@ -73,12 +80,24 @@ public abstract class Entity extends NamedObj
 	 * Get a Port from the existing set of Ports
 	 * @param name Port name
 	 * @return Port with the given name, null otherwise
-	 * @throws Exception if there is no Port with the given name
+	 * @throws Exception 
 	 * */
 	@SuppressWarnings("unchecked")
 	public Port getPort(String name) throws Exception
 	{
 		return (Port) get(name, (HashMap<String, NamedObj>) _portList);
+	}
+	
+	/**
+	 * Return true if the given port exists.
+	 * @param name Port name
+	 * @return Port with the given name, null otherwise
+	 * @throws Exception 
+	 * */
+	@SuppressWarnings("unchecked")
+	public boolean hasPort(String name) throws Exception
+	{
+		return contains(name, (HashMap<String, NamedObj>) _portList);
 	}
 
 	/**
@@ -98,5 +117,23 @@ public abstract class Entity extends NamedObj
 	{
 		
 	}*/
+	
+	/**
+	 * @throws Exception 
+	 * 
+	 * */
+	public void addDirector(Director d) throws Exception
+	{
+		_director = d;
+		this.addAttribute(new Attribute(d.getName(), d.getClassName()));
+	}
+	
+	public Director removeDirector() throws Exception
+	{
+		
+		Director d = (Director) this.removeAttribute(_director.getName());
+		_director = null;
+		return d;
+	}
 
 }
