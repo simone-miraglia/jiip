@@ -4,12 +4,12 @@
 package com.jiip.kernel;
 
 /**
+ * TODO Director description..
  * @author simone
  *
  */
 public class Director extends Attribute implements Executable
 {
-
 	/**
 	 * Default constructor.
 	 * */
@@ -27,5 +27,4 @@ public class Director extends Attribute implements Executable
 	{
 		super(name, className);
 	}
-
 }

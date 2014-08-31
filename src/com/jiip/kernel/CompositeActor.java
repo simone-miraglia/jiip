@@ -1,11 +1,12 @@
 package com.jiip.kernel;
 
+/**
+ * CompositeActor description
+ * @author simone
+ *
+ */
 public class CompositeActor extends CompositeEntity implements Executable
-{
-	/**
-	 * 
-	 * */
-	
+{	
 	/**
 	 * Default constructor.
 	 * */

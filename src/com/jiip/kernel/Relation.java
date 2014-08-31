@@ -4,16 +4,18 @@
 package com.jiip.kernel;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 
 /**
+ * TODO Relation description
  * @author simone
  *
  */
 public class Relation extends NamedObj
 {
-	private HashMap <String, Port> _portList;
+	/**
+	 * List of ports linked with current relation.
+	 * */
+	private ArrayList <Port> _portList;
 	
 	/**
 	 * Default constructor.
@@ -21,7 +23,7 @@ public class Relation extends NamedObj
 	public Relation()
 	{
 		super();
-		_portList = new HashMap <String, Port>();
+		_portList = new ArrayList <Port>();
 	}
 	
 	/**
@@ -32,7 +34,7 @@ public class Relation extends NamedObj
 	public Relation(String name, String className)
 	{
 		super(name, className);
-		_portList = new HashMap <String, Port>();
+		_portList = new ArrayList <Port>();
 	}
 	
 	/**
@@ -40,45 +42,43 @@ public class Relation extends NamedObj
 	 * @param p The port you want to add.
 	 * @throws Exception If you add an existing port
 	 * */
+	//FIXME odd to have this method public
 	public void addPort(Port p) throws Exception
 	{
-		/*
-		 * port is saved as container.name to avoid collision due to 
-		 * multiple name ports contained in different entites
-		 * */
-		_portList.put(p.getContainer().getName() + "." + p.getName(), p);
+		_portList.add(p);
 	}
 	
 	/**
 	 * Remove a port from the existing set of linked ports.
-	 * @param name The name of the port you want to remove.
-	 * @throws Exception If you remove a non-existing port
+	 * @param obj The port you want to remove.
+	 * @return Returns true if this list contained the specified element 
 	 * */
-/*	@SuppressWarnings("unchecked")
-	public Port removePort(String name) throws Exception
+	//FIXME odd to have this method public
+	public boolean removePort(Port obj)
 	{
-		return (Port) remove(name, (HashMap<String, NamedObj>) _portList);
+		return _portList.remove(obj);
 	}
-*/
+
 	/**
 	 * Get a Port from the existing set of linked ports
 	 * @param name Port name
 	 * @return Port with the given name, null otherwise
 	 * @throws Exception if there is no Port with the given name
 	 * */
-/*	@SuppressWarnings("unchecked")
 	public Port getPort(String name) throws Exception
 	{
-		return (Port) get(name, (HashMap<String, NamedObj>) _portList);
+		for(Port p : _portList)
+			if (p.getName().equals(name))
+				return p;
+		throw new Exception("Unable to get Port. It does not exist.");
 	}
-*/
+
 	/**
 	 * Returns the set of linked ports as an ArrayList
 	 * @return ArrayList linked port list
 	 * */
 	public ArrayList<Port> linkedPortList()
 	{
-		return new ArrayList<Port>((Collection<? extends Port>) _portList.values());
+		return _portList;
 	}
-
 }

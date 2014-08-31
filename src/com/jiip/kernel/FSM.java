@@ -2,17 +2,30 @@ package com.jiip.kernel;
 
 import java.util.ArrayList;
 
-public class FSM extends CompositeEntity
+/**
+ * 
+ * @author simone
+ *
+ */
+public class FSM extends CompositeEntity implements Executable
 {
 
+	/**
+	 * Default constructor.
+	 */
 	public FSM()
 	{
 		super();
 	}
 
-	public FSM(String name)
+	/**
+	 * Constructor with name and class
+	 * @param name Name of the object
+	 * @param className class of the object
+	 */
+	public FSM(String name, String className)
 	{
-		super(name, "ptolemy.domains.modal.modal.ModalController");
+		super(name, className);
 	}
 	
 	/**

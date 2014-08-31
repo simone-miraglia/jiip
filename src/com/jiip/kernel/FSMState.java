@@ -2,23 +2,40 @@ package com.jiip.kernel;
 
 import java.util.ArrayList;
 
-public class FSMState extends CompositeEntity
+/**
+ * TODO FSMState description
+ * @author simone
+ *
+ */
+public class FSMState extends CompositeEntity implements Executable
 {
+	/**
+	 * Refinement
+	 * */
+	private CompositeEntity _refinement;
 
+	/**
+	 * Default constructor.
+	 */
 	public FSMState()
 	{
-		
+		super();
 	}
 
-	public FSMState(String name)
+	/**
+	 * Constructor with name and class
+	 * @param name Name of the object
+	 * @param className class of the object
+	 */
+	public FSMState(String name, String className)
 	{
-		super(name, "ptolemy.domains.modal.kernel.State");
+		super(name, className);
 	}
-
-	/*
-	 * TODO refinements......
-	 * */
 	
+	/**
+	 * Return the set of outgoing transitions from this state.
+	 * @return set of outgoing transitions
+	 */
 	public ArrayList<FSMTransition> outgoingTransitions()
 	{
 		ArrayList<FSMTransition> transitions = new ArrayList<FSMTransition>();
@@ -38,6 +55,10 @@ public class FSMState extends CompositeEntity
 		return transitions;
 	}
 	
+	/**
+	 * Return the set of incoming transitions from this state.
+	 * @return set of incoming transitions
+	 */
 	public ArrayList<FSMTransition> incomingTransitions()
 	{
 		ArrayList<FSMTransition> transitions = new ArrayList<FSMTransition>();
@@ -60,7 +81,33 @@ public class FSMState extends CompositeEntity
 	@Override
 	public boolean isAtomic()
 	{
-		// TODO check num of refinements...
-		return false;
+		return _refinement == null;
+	}
+
+	/**
+	 * Check if this state has a refinement.
+	 * @return true if this state has a refinement
+	 */
+	public boolean hasRefinement()
+	{
+		return _refinement != null;
+	}
+	
+	/**
+	 * Get refinement of this state, if any
+	 * @return the refinement
+	 */
+	public CompositeEntity getRefinement()
+	{
+		return _refinement;
+	}
+
+	/**
+	 * Set refinement of this state. Null means no refinement.
+	 * @param refinement to set
+	 */
+	public void setRefinement(CompositeEntity refinement)
+	{
+		this._refinement = refinement;
 	}
 }

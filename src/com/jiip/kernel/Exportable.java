@@ -10,11 +10,10 @@ import org.w3c.dom.Document;
  * TODO: additional description
  * 
  * @author Simone Miraglia
- * @see PtolemyObj
+ * @see NamedObj
  */
 
 public interface Exportable
 {
 	public abstract Document exportMoML();
-
 }

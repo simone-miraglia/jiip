@@ -1,18 +1,23 @@
 package com.jiip.kernel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
+/**
+ * TODO Port description
+ * @author simone
+ *
+ */
 public abstract class Port extends NamedObj
 {
-	private HashMap <String, Relation> _linkedRelList;
+	private ArrayList <? extends NamedObj> _linkedRelList;
+	
 	/**
 	 * Default constructor.
 	 * */
 	public Port()
 	{		
 		super();
-		_linkedRelList = new HashMap <String, Relation>();
+		_linkedRelList = new ArrayList <Relation>();
 	}
 	
 	/**
@@ -23,7 +28,7 @@ public abstract class Port extends NamedObj
 	public Port(String name, String className)
 	{
 		super(name, className);
-		_linkedRelList = new HashMap <String, Relation>();
+		_linkedRelList = new ArrayList <Relation>();
 	}
 	
 	/**
@@ -31,23 +36,21 @@ public abstract class Port extends NamedObj
 	 * @param r The relation you want to add this port to.
 	 * @throws Exception If you link twice with the same relation
 	 * */
+	@SuppressWarnings("unchecked")
 	public void link(Relation r) throws Exception
 	{		
 		/*
-		 * First check whether relation is already contained.
-		 * Cannot link twice with the same relation
+		 * First check whether relation is already contained, ie
+		 * avoid to link twice with the same relation.
 		 * */
-		Relation t = _linkedRelList.get(r.getName());
-		if (t == null)
+		if (!_linkedRelList.contains(r))
 		{
 			/*
 			 * If it is unique, add relation to list
 			 * and set this port to be in the relation
 			 * */
-		
-			_linkedRelList.put(r.getName(), r);
+			((ArrayList<Relation>)_linkedRelList).add(r);
 			r.addPort(this);
-			//r.getLinkedPortHashMap().put(this.getName(), this);
 		}
 		else
 			throw new Exception("DuplicateNameException: cannot add a port to the same relation.");
@@ -56,30 +59,29 @@ public abstract class Port extends NamedObj
 	/**
 	 * Remove this port from an existing relation.
 	 * @param r The relation you want to unlink with.
-	 * @throws Exception If you unlink with a relation without this port
+	 * @throws Exception If you unlink a relation without this port
 	 * */
-	/*public void unlink(Relation r) throws Exception
+	public void unlink(Relation r) throws Exception
 	{
-		TODO: do not know if needed or should be implemented in Relation
+		//FIXME: where should i put this method? Port or Relation?
 		
-		
+		/*
 		 * First check whether port is contained in relation r
 		 * Cannot unlink from a Port non contained in a relation
-		 * 
-		//Port t = r.getLinkedPortHashMap().get(this.getName());
-		if (t != null)
+		 */
+		if (r.linkedPortList().contains(this))
 		{
-			
+			/*
 			 * If Port exists, then unlink
 			 * remove relation from to linked relation list
 			 * and remove port form relation linked port list
-			 * 
-			_linkedRelList.remove(r.getName());
-			//r.getLinkedPortHashMap().remove(this.getName());
+			 */
+			_linkedRelList.remove(r);
+			r.removePort(this);
 		}
 		else
 			throw new Exception("DuplicateNameException: port non contained in given relation.");
-	}*/
+	}
 	
 	/**
 	 * Get a relation from the existing set of linked relations
@@ -87,19 +89,19 @@ public abstract class Port extends NamedObj
 	 * @return Relation with the given name, null otherwise
 	 * @throws Exception if there is no Relation with the given name
 	 * */
+	@SuppressWarnings("unchecked")
 	public Relation getRelation(String name) throws Exception
 	{
-		//TODO
-		return null;
+		return (Relation) get(name, (ArrayList<NamedObj>) _linkedRelList);
 	}
 
 	/**
 	 * Returns the set of linked relations as an ArrayList
 	 * @return ArrayList linked relation list
 	 * */
+	@SuppressWarnings("unchecked")
 	public ArrayList<Relation> linkedRelationList()
 	{
-		//TODO
-		return null;
+		return (ArrayList<Relation>) _linkedRelList;
 	}
 }

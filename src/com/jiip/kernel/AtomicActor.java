@@ -4,6 +4,7 @@
 package com.jiip.kernel;
 
 /**
+ * TODO AtomicActor description..
  * @author simone
  *
  */
@@ -45,8 +46,7 @@ public class AtomicActor extends Entity implements Executable
 	 * */
 	public boolean isOpaque()
 	{
-		/*what is the value?*/
+		/*TODO Has an atomic actor a director?*/
 		return false;
 	}
-
 }

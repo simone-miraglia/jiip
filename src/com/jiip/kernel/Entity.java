@@ -6,19 +6,26 @@ package com.jiip.kernel;
 import java.util.ArrayList;
 
 /**
+ * TODO Entity description
  * @author simone
  *
  */
 public abstract class Entity extends NamedObj
 {
+	/**
+	 * List of ports.
+	 */
 	private ArrayList <? extends NamedObj> _portList;
+	
+	/**
+	 * Entity director, if presents.
+	 */
+	private Director _director;
+	
 	
 	/**
 	 * Default constructor.
 	 * */
-	
-	Director _director;
-	
 	public Entity()
 	{
 		super();
@@ -38,13 +45,13 @@ public abstract class Entity extends NamedObj
 	}
 	
 	/**
-	 * Returns a boolean value indicating whether this Entity is atomic or not
+	 * Returns a boolean value indicating whether this Entity is atomic or not.
 	 * @return True if entity is atomic, false otherwise
 	 * */
 	public abstract boolean isAtomic();
 	
 	/**
-	 * Returns a boolean value indicating whether this Entity has a director or not
+	 * Returns a boolean value indicating whether this Entity has a director or not.
 	 * @return True if entity has a director, false otherwise
 	 * */
 	public boolean isOpaque()
@@ -65,7 +72,7 @@ public abstract class Entity extends NamedObj
 	
 	/**
 	 * Remove a port from the existing set of ports.
-	 * @param name The name of the port you want to remove.
+	 * @param obj The port you want to remove.
 	 * @throws Exception If you remove a non-existing port
 	 * */
 	@SuppressWarnings("unchecked")
@@ -89,7 +96,7 @@ public abstract class Entity extends NamedObj
 	/**
 	 * Return true if the given port exists.
 	 * @param name Port name
-	 * @return Port with the given name, null otherwise
+	 * @return true if the port exists
 	 * @throws Exception 
 	 * */
 	@SuppressWarnings("unchecked")
@@ -108,30 +115,39 @@ public abstract class Entity extends NamedObj
 		return (ArrayList<Port>) _portList;
 	}
 	
+
 	/**
-	 * 
-	 * *//*
-	public void export()
-	{
-		
-	}*/
-	
-	/**
-	 * @throws Exception 
-	 * 
-	 * */
+	 * Add a director to this entity.
+	 * @param d director to add
+	 * @throws Exception
+	 */
 	public void addDirector(Director d) throws Exception
 	{
 		_director = d;
 		this.addAttribute(new Attribute(d.getName(), d.getClassName()));
 	}
 	
+	/**
+	 * Remove the added director.
+	 * @return true if correctly removed
+	 * @throws Exception if no director is present
+	 */
 	public boolean removeDirector() throws Exception
 	{
 		
 		boolean t = this.removeAttribute(_director);
 		_director = null;
 		return t;
+	}
+	
+	/**
+	 * Get the director.
+	 * @return entity director.
+	 * @throws Exception if no director exists
+	 */
+	public Director getDirector() throws Exception
+	{
+		return (Director) this.getAttribute(_director.getName());
 	}
 
 }

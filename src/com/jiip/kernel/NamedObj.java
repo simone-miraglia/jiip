@@ -17,9 +17,7 @@ import org.w3c.dom.Element;
  * <p>This class implements a NamedObj. It is an abstract class which has at least four main concrete objects:
  * Entity, Port, Attribute and Relation. A NamedObj has a containment relationship with another NamedObj.</p>
  * 
- * <p>It implements Nameable, Classable and Exportable interfaces.
- * Every NamedObj has a unique name in the context of the same container,
- * which means two NamedObj can have the same name iff are contained in different containers, and a class.</p>
+ * <p>It implements Nameable, Classable and Exportable interfaces.</p>
  * 
  * @author Simone Miraglia
  * @see Entity
@@ -39,9 +37,8 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	
 	/**
 	 * Unique name identifier inside its container.
-	 * */
-	/*
-	 * Must check uniqueness
+	 * Unique means two object - of the same type (Entity, Port, etc.) - with the same name
+	 * are not allowed to co-exists in the same container.
 	 * */
 	private String _name;
 	
@@ -51,28 +48,19 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	private String _className;
 	
 	/**
-	 * Specifies the container NamedObj.
+	 * Specifies the container.
 	 * */
 	private NamedObj _container;
 	
 	/**
 	 * A list of contained NamedObjs. Search is by name.
 	 */
-	/*
-	 * Every time a NamedObj is added to some collection within
-	 * an istance of this class is also added to this collection.
-	 * Could be useful both for check uniqueness of a given contained
-	 * NamedObj or to access fast all the contained NamedObjs
-	 * */
-	//FIXME should allow multiple keys values array is better maybe
-//	private HashMap<String, NamedObj> _containedObjList;
 	private ArrayList<NamedObj> _containedObjList;
+	
 	/**
 	 * A container for attributes. Search is by name.
 	 * */
 	/*
-	 * HashMap should grant fast access to attributes.
-	 * Key value is the attribute name itself.
 	 * It is declared as <String, ? extends NamedObj> to allow
 	 * usage of add/remove/get methods regardless of the concrete
 	 * type (eg, Entity, Attribute, and so on).
@@ -88,7 +76,7 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	/**
 	 * Check name existence within the contained NamedObj.
 	 * Useful to grant uniqueness.
-	 * @param 
+	 * @param NamedObj of which check the uniqueness
 	 * @param container NamedObj in which check uniqueness
 	 * @return true if name already exists, false otherwise
 	 * */
@@ -122,8 +110,6 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 		/*
 		 * To check name uniqueness, lookup in the list
 		 * of contained NamedObjs.
-		 * Return false (ie, a duplicate exists) iff two objects are of the same class
-		 * and their name are equals.
 		 * */
 		
 		for(NamedObj o : container._containedObjList)
@@ -143,19 +129,16 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	 * */
 	protected void add(NamedObj obj, ArrayList<NamedObj> list) throws Exception
 	{
-		//TODO description
 		/*
 		 * First check whether the given NamedObj is already added somewhere
-		 * (_container is not null) and raise an exception in case
+		 * (ie, _container is not null) and raise an exception in that case
 		 */		
 		if (obj.getContainer() != null)
 			throw new Exception (obj.getName() + " already contained in " + obj.getContainer().getName() + 
 					". Cannot be added in " + this.getName() + ".");
 		
 		/*
-		 * Then check whether is already contained.
-		 * Two or more NamedObj with the same Name are not allowed.
-		 * To do so, check if already exists; if is not, can be added,
+		 * Then check uniqueness of the name. If it is, it can be added,
 		 * otherwise raise an Exception.
 		 * */
 		if (!checkNameExistence(obj, this))
@@ -178,23 +161,15 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	
 	/**
 	 * Remove a NamedObj obj from a container of NamedObj.
-	 * @param key the name of the NamedObj you want to remove
+	 * @param obj NamedObj you want to remove
 	 * @param list the container
-	 * @return the removed NamedObj
+	 * @return Returns true if this list contained the specified element 
 	 * @throws Exception if there is no element with such key inside the container
 	 * */
 	protected boolean remove(NamedObj obj, ArrayList<NamedObj> list) throws Exception
-	{
+	{		
 		/*
-		 * First check whether a NamedObj with the given key actually exists.
-		 * Cannot remove a non-contained element.
-		 * */
-		//TODO description
-		
-		/*
-		 * If search returns a null value, then the given NamedObj is not contained
-		 * so raise an Exception.
-		 * Otherwise, it is and can be removed
+		 * First check if obj is actually contained, if it is not, raise an exception
 		 * */
 		if (list.contains(obj))
 		{
@@ -204,7 +179,7 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 			boolean t = list.remove(obj);
 			
 			/* and delete the reference between this NamedObj (container)
-			 * and t (contained)
+			 * and obj (contained)
 			 * (If it is contained ==> it also contained in _containedObjList,
 			 * so next remove is ok)
 			 * */
@@ -212,7 +187,7 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 			obj.setContainer(null);
 			
 			/*
-			 * Eventually returns the removed NamedObj
+			 * Eventually returns true
 			 * */
 			return t;
 		}
@@ -229,10 +204,9 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	 * */
 	protected NamedObj get(String key, ArrayList<NamedObj> list) throws Exception
 	{
-		//TODO description
 		/*
-		 * Just lookup in the list. Null value returned means there is
-		 * no NamedObj with the given key.
+		 * Just lookup in the list.
+		 * Raise exception if no such element has been found.
 		 * */
 		for(NamedObj o : list)
 			if (o.getName().equals(key))
@@ -282,7 +256,7 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	}
 	
 	/**
-	 * Returns the name of the NamedObj. Implements Nameable getName()
+	 * Returns the name of the NamedObj. Implements Nameable getName().
 	 * @see Nameable
 	 * @return name of the NamedObj
 	 * */
@@ -293,7 +267,7 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 
 	/**
 	 * Set the name of the NamedObj. This must be unique inside the context of its container.
-	 * Implements Nameable setName()
+	 * Implements Nameable setName().
 	 * @param name name of the NamedObj
 	 * @throws Exception 
 	 * @see Nameable
@@ -317,8 +291,8 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	}
 	
 	/**
-	 * Set the class name of the NamedObj. This must should be a valid class name inside Ptolemy.
-	 * Implements Classable setClassName()
+	 * Set the class name of the NamedObj. This should be a valid class name inside Ptolemy.
+	 * Implements Classable setClassName().
 	 * @param name Class name of the NamedObj
 	 * @see Classable
 	 * */
@@ -342,14 +316,13 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	 * Set its container. Null value means no container.  
 	 * @param container parent container of this object
 	 * */
-
-	/*
-	 * Protected because container is set/unset during
-	 * add/remove operations, so users cannot use this
-	 * function in order to preserve "integrity"
-	 * */
 	protected void setContainer(NamedObj container)
 	{
+		/*
+		 * Protected because container is set/unset during
+		 * add/remove operations, so users cannot use this
+		 * function in order to preserve "integrity"
+		 * */
 		_container = container;
 	}
 	
@@ -366,7 +339,8 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	
 	/**
 	 * Remove an attribute from the existing set of attributes.
-	 * @param name The name of attribute you want to remove.
+	 * @param obj The attribute you want to remove.
+	 * @return Returns true if this list contained the specified element
 	 * @throws Exception If you remove a non-existing attribute
 	 * */
 	@SuppressWarnings("unchecked")
@@ -388,9 +362,9 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	}
 	
 	/**
-	 * 
-	 * @param name
-	 * @return
+	 * Check if current object has a given attribute.
+	 * @param name name of the attribute
+	 * @return true if the attribute is present
 	 */
 	@SuppressWarnings("unchecked")
 	public boolean hasAttribute(String name)
@@ -401,7 +375,6 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	
 	/**
 	 * Returns the set of attributes as an ArrayList
-	 * @see ArrayList
 	 * @return The set of attributes
 	 * */
 	@SuppressWarnings("unchecked")
@@ -412,7 +385,6 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	
 	/**
 	 * Returns the set of contained NamedObjs as an ArrayList
-	 * @see ArrayList
 	 * @return The set of contained NamedObj
 	 * */
 	public ArrayList<NamedObj> containedList()
@@ -422,7 +394,10 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	
 	
 	/**
-	 * TODO
+	 * Export a given NamedObj (and all its contained objects) to xml format with the MoML syntax.
+	 * @param obj NamedObj to export
+	 * @param xml xml document to which append the exported NamedObj
+	 * @return an xml element with MoML syntax
 	 * **/
 	private Element exportObj(NamedObj obj, Document xml)
 	{
@@ -501,7 +476,9 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	}
 	
 	/**
-	 * 
+	 * Export the model to a MoML file. 
+	 * Create a MoML document which contains the current obj.
+	 * Should be used when current obj is at least a CompositeEntity.
 	 */
 	public Document exportMoML()
 	{

@@ -13,18 +13,22 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+/**
+ * MoMLImporter description
+ * @author simone
+ *
+ */
 public class MoMLImporter
 {
 
+	/**
+	 * Path name of the MoML file.
+	 */
 	private String _pathName;
-
-	
-	
-	
 	
 	/**
-	 * 
-	 * @param pathName
+	 * Default constructor. 
+	 * @param pathName path name of the MoML file
 	 */
 	public MoMLImporter(String pathName)
 	{
@@ -32,9 +36,9 @@ public class MoMLImporter
 	}
 	
 	/**
-	 * 
-	 * @param node
-	 * @return
+	 * Create a NamedObj from a MoML tag.
+	 * @param node MoML tag
+	 * @return created NamedObj
 	 */
 	private NamedObj createNamedObj(Element node)
 	{
@@ -54,9 +58,9 @@ public class MoMLImporter
 			else if(className.endsWith("ModalModel"))
 				object = new CompositeActor(name, className);
 			
-			//it is a modal controller
+			//it is a modal controller or FSMActor
 			else if(className.endsWith("ModalController") || className.endsWith("FSMActor"))
-				object = new FSM(name);
+				object = new FSM(name, className);
 			
 			//it is a refinement
 			else if(className.endsWith("Refinement"))
@@ -64,7 +68,7 @@ public class MoMLImporter
 			
 			//it is a state of a state machine
 			else if(className.endsWith("State"))
-				object = new FSMState(name);
+				object = new FSMState(name, className);
 			
 			//else it is an atomic actor
 			else
@@ -72,7 +76,7 @@ public class MoMLImporter
 			
 		}
 		
-		//property tag
+		//property tag (do not import hidden parameters, ie starting with "_" )
 		else if(node.getNodeName().equals("property") && !name.startsWith("_"))
 		{			
 			//director
@@ -91,7 +95,7 @@ public class MoMLImporter
 		else if (node.getNodeName().equals("relation"))
 		{
 			if (className.endsWith("Transition"))
-				object = new FSMTransition(name);
+				object = new FSMTransition(name, className);
 			else
 				object = new Relation(name, className);
 		}
@@ -104,11 +108,9 @@ public class MoMLImporter
 	}
 	
 	/**
-	 * 
-	 * @param node
-	 * @param parent
-	 * @return
-	 * @throws Exception
+	 * Visit a MoML file in order to create a jiip model.
+	 * @param MoML node (initially is the root)
+	 * @return created jiip model
 	 */
 	private NamedObj visitMoML(Element node)
 	{
@@ -158,16 +160,24 @@ public class MoMLImporter
 							//if obj is an entity, current is a composite entity (so cast is needed)
 							if (object instanceof Entity)
 							{
-
+								//if obj is a state and has a refinement, must link obj with it
+								if (object instanceof FSMState)
+								{
+									FSMState state = (FSMState) object;
+									if(state.hasAttribute("refinementName"))
+									{
+										String refinementName = state.getAttribute("refinementName").getValue();
+										//FIXME create a list of "pending state", once found the refinement state,
+										//fix..
+									}
+									
+								}
 								((CompositeEntity) container).addEntity((Entity) object);
 							}
 							
 							//if obj is a port, current could be atomic or composite
 							else if (object instanceof Port)
-							{
-
 								container.addPort((Port)object);
-							}
 								
 							//if obj is a relation, current is a composite entity (so cast is needed)
 							else if (object instanceof Relation)
@@ -190,6 +200,12 @@ public class MoMLImporter
 		
 	}
 	
+	/**
+	 * Given a link tag and a container, create a link between referenced port and relation
+	 * within the container.
+	 * @param node link tag
+	 * @param container container in which create the link
+	 */
 	private void createLink(Element node, CompositeEntity container)
 	{
 		try
@@ -197,30 +213,40 @@ public class MoMLImporter
 			String portName = node.getAttribute("port");
 			String relationName = node.getAttribute("relation");			
 			
-			//get actual relation from container
+			/*
+			 * get actual relation from container
+			 */
 			Relation r = container.getRelation(relationName);
 			Port p;
 			
-			//two cases: port name = "actor.port" or port name = "port"
-			//first case, the port is from on of the contained actors ports
-			//second case, the port is from the container set of ports
+			/*
+			 * two cases: port name = "actor.port" or port name = "port"
+			 * first case, the port is from one of the contained actors ports
+			 * second case, the port is from the container set of ports
+			 * */
 			if(portName.contains("."))
 			{
-				//get actor and port
+				/*
+				 * get actor and port
+				 */
 				String actorName = portName.substring(0, portName.indexOf("."));
 				portName = portName.substring(portName.indexOf(".") + 1);
 	
-				//find actor
+				/*
+				 * find actor
+				 */
 				Entity actor = container.getEntity(actorName);
 				
-				//check if actor has the port because when you add atomic actor in Ptolemy
-				//ports are not added in MoML file 
+				/*check if actor has the port because when you add atomic actor in Ptolemy
+				 *ports are not added in MoML file 
+				 */
 				
 				if (!actor.hasPort(portName))
 				{
-					//if no port has been found (ie, actor is an atomic actor)
-					//add a new port (in order to link)
-					p = new IOPort(portName, "ptolemy.actor.TypedIOPort"); //TODO CHECK if right
+					/*if no port has been found (ie, actor is an atomic actor)
+					 *add a new port (in order to link)
+					 * */
+					p = new IOPort(portName, "ptolemy.actor.TypedIOPort");
 					actor.addPort(p);
 				}
 				else
@@ -230,7 +256,9 @@ public class MoMLImporter
 			else //simply get port from container
 				p = container.getPort(portName);
 			
-			//Finally, link port and relation
+			/*
+			 * Finally, link port and relation
+			 */
 			p.link(r);
 			
 		}
@@ -241,24 +269,32 @@ public class MoMLImporter
 	}
 	
 	/**
-	 * 
-	 * @param node
-	 * @param object
+	 * Traverse synchronously model and MoML in order to set links between
+	 * ports and relations.
+	 * @param node MoML node (initially is the root of MoML)
+	 * @param object model to set links for
 	 */
 	private void setLinks(Element node, Entity object)
 	{
 		try
 		{
-			//Iterate
+			/*
+			 * For each sub node
+			 */
 			NodeList childNodes = node.getChildNodes();
 			for(int i = 0; i < childNodes.getLength(); ++i)
 			{
 				Node n = childNodes.item(i);
 				
-				//Make sure it is an element node and it is a proper tag (ie, name is not null)
+				/*
+				 * Make sure it is an element node
+				 */
 				if (n.getNodeType() == Node.ELEMENT_NODE)
 				{
-					//links are only in <entity> tag
+					/*
+					 * Interested only in entity and link tags:
+					 * Links are only in <entity> tag and <link> tag provides ports and relations to connect
+					 */
 					if(n.getNodeName().equals("entity"))
 					{
 						String entityName = ((Element)n).getAttribute("name");
@@ -280,8 +316,8 @@ public class MoMLImporter
 	
 	
 	/**
-	 * 
-	 * @return
+	 * Load the MoML file and create a new model.
+	 * @return the loaded model
 	 */
 	public NamedObj load()
 	{		
@@ -291,12 +327,23 @@ public class MoMLImporter
 		Document doc;
 		try
 		{
+			/*
+			 * Read xml file
+			 */
 			dBuilder = dbFactory.newDocumentBuilder();
 			doc = dBuilder.parse(fXmlFile);
 			doc.getDocumentElement().normalize();
 			Element root = doc.getDocumentElement();
+			
+			/*
+			 * Create the model and then set links between ports and relation.
+			 */
 			NamedObj model = visitMoML(root);
 			setLinks(root, (Entity) model);
+			
+			/*
+			 * Finally return
+			 */
 			return model;
 		}
 		catch (SAXException | IOException | ParserConfigurationException e)
@@ -305,5 +352,4 @@ public class MoMLImporter
 		}
 		return null;
 	}
-
 }

@@ -10,7 +10,11 @@ import com.jiip.kernel.Port;
 import com.jiip.kernel.Attribute;
 import com.jiip.kernel.Relation;
 
-
+/**
+ * Read a model, visit this model and print FSM.
+ * @author simone
+ *
+ */
 public class Test2
 {
 
@@ -46,10 +50,11 @@ public class Test2
 		CompositeActor model = new CompositeActor();
 		MoMLImporter importer = new MoMLImporter("/home/simone/Scrivania/RailroadControl.xml");
 		model = (CompositeActor) importer.load();
+		
 		//visitModel(model, "");
 		
 		//CompositeEntity modalmodel = (CompositeEntity) model.getEntity("ModalModel");
-		FSM fsm = (FSM) model.getEntity("Gate");
+		FSM fsm = (FSM) model.getEntity("Train");
 		
 		System.out.println("states:");
 		for(FSMState s : fsm.stateList())
