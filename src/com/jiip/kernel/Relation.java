@@ -76,32 +76,9 @@ public class Relation extends NamedObj
 	 * Returns the set of linked ports as an ArrayList
 	 * @return ArrayList linked port list
 	 * */
-	@SuppressWarnings("unchecked")
 	public ArrayList<Port> linkedPortList()
 	{
 		return new ArrayList<Port>((Collection<? extends Port>) _portList.values());
 	}
-	
-	/**
-	 * Returns the set of linked ports as a HashMap
-	 * @return HashMap linked port hashmap
-	 * */
-	/*
-	 * do not like this solution..it is just for port link/unlink
-	 * */
-	@SuppressWarnings("unchecked")
-	public HashMap<String, Port> getLinkedPortHashMap()
-	{
-		return (HashMap<String, Port>) _portList;
-	}
-	
-
-	/**
-	 * 
-	 * *//*
-	public void export()
-	{
-
-	}*/
 
 }

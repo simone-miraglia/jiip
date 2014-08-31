@@ -4,8 +4,6 @@
 package com.jiip.kernel;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 
 /**
  * @author simone
@@ -16,12 +14,12 @@ public abstract class CompositeEntity extends Entity
 	/**
 	 * A container for contained entities
 	 * */
-	private HashMap <String, ? extends NamedObj> _entityList;
+	private ArrayList <? extends NamedObj> _entityList;
 	
 	/**
 	 * A container for contained relations
 	 * */
-	private HashMap <String, ? extends NamedObj> _relList;
+	private ArrayList <? extends NamedObj> _relList;
 	
 	/**
 	 * Default constructor.
@@ -29,8 +27,8 @@ public abstract class CompositeEntity extends Entity
 	public CompositeEntity()
 	{
 		super();
-		_entityList = new HashMap <String, Entity>();
-		_relList =  new HashMap <String, Relation>();
+		_entityList = new ArrayList <Entity>();
+		_relList =  new ArrayList <Relation>();
 	}
 	
 	/**
@@ -41,8 +39,8 @@ public abstract class CompositeEntity extends Entity
 	public CompositeEntity(String name, String className)
 	{
 		super(name, className);
-		_entityList = new HashMap <String, Entity>();
-		_relList =  new HashMap <String, Relation>();
+		_entityList = new ArrayList <Entity>();
+		_relList =  new ArrayList <Relation>();
 	}
 	
 	/**
@@ -53,7 +51,7 @@ public abstract class CompositeEntity extends Entity
 	@SuppressWarnings("unchecked")
 	public void addEntity(Entity e) throws Exception
 	{
-		add(e, (HashMap<String, NamedObj>) _entityList);
+		add(e, (ArrayList<NamedObj>) _entityList);
 	}
 	
 	/**
@@ -62,9 +60,9 @@ public abstract class CompositeEntity extends Entity
 	 * @throws Exception If you remove a non-existing Entity
 	 * */
 	@SuppressWarnings("unchecked")
-	public Entity removeEntity(String name) throws Exception
+	public boolean removeEntity(Entity obj) throws Exception
 	{
-		return (Entity) remove(name, (HashMap<String, NamedObj>) _entityList);
+		return remove(obj, (ArrayList<NamedObj>) _entityList);
 	}
 	
 	/**
@@ -76,7 +74,7 @@ public abstract class CompositeEntity extends Entity
 	@SuppressWarnings("unchecked")
 	public Entity getEntity(String name) throws Exception 
 	{
-		return (Entity) get(name, (HashMap<String, NamedObj>) _entityList);
+		return (Entity) get(name, (ArrayList<NamedObj>) _entityList);
 	}
 
 	/**
@@ -86,7 +84,7 @@ public abstract class CompositeEntity extends Entity
 	@SuppressWarnings("unchecked")
 	public ArrayList<Entity> entityList()
 	{
-		return new ArrayList<Entity>((Collection<? extends Entity>) _entityList.values());
+		return  (ArrayList<Entity>) _entityList;
 	}
 	
 	/**
@@ -97,7 +95,7 @@ public abstract class CompositeEntity extends Entity
 	@SuppressWarnings("unchecked")
 	public void addRelation(Relation r) throws Exception
 	{
-		add(r, (HashMap<String, NamedObj>) _relList);
+		add(r,  (ArrayList<NamedObj>) _relList);
 	}
 	
 	/**
@@ -106,9 +104,9 @@ public abstract class CompositeEntity extends Entity
 	 * @throws Exception If you remove a non-existing Relation
 	 * */
 	@SuppressWarnings("unchecked")
-	public Relation removeRelation(String name) throws Exception
+	public boolean removeRelation(Relation obj) throws Exception
 	{
-		return (Relation) remove(name, (HashMap<String, NamedObj>) _relList);
+		return remove(obj,  (ArrayList<NamedObj>) _relList);
 	}
 	
 	/**
@@ -120,7 +118,7 @@ public abstract class CompositeEntity extends Entity
 	@SuppressWarnings("unchecked")
 	public Relation getRelation(String name) throws Exception 
 	{
-		return (Relation) get(name, (HashMap<String, NamedObj>) _relList);
+		return (Relation) get(name,  (ArrayList<NamedObj>) _relList);
 	}
 
 	/**
@@ -130,7 +128,7 @@ public abstract class CompositeEntity extends Entity
 	@SuppressWarnings("unchecked")
 	public ArrayList<Relation> relationList()
 	{
-		return new ArrayList<Relation>((Collection<? extends Relation>) _relList.values());
+		return (ArrayList<Relation>) _relList;
 	}
 	
 	/**

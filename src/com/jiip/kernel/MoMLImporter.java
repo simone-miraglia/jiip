@@ -55,7 +55,7 @@ public class MoMLImporter
 				object = new CompositeActor(name, className);
 			
 			//it is a modal controller
-			else if(className.endsWith("ModalController"))
+			else if(className.endsWith("ModalController") || className.endsWith("FSMActor"))
 				object = new FSM(name);
 			
 			//it is a refinement
@@ -157,11 +157,17 @@ public class MoMLImporter
 								
 							//if obj is an entity, current is a composite entity (so cast is needed)
 							if (object instanceof Entity)
+							{
+
 								((CompositeEntity) container).addEntity((Entity) object);
+							}
 							
 							//if obj is a port, current could be atomic or composite
 							else if (object instanceof Port)
+							{
+
 								container.addPort((Port)object);
+							}
 								
 							//if obj is a relation, current is a composite entity (so cast is needed)
 							else if (object instanceof Relation)

@@ -4,8 +4,6 @@
 package com.jiip.kernel;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 
 /**
  * @author simone
@@ -13,7 +11,7 @@ import java.util.HashMap;
  */
 public abstract class Entity extends NamedObj
 {
-	private HashMap <String, ? extends NamedObj> _portList;
+	private ArrayList <? extends NamedObj> _portList;
 	
 	/**
 	 * Default constructor.
@@ -24,7 +22,7 @@ public abstract class Entity extends NamedObj
 	public Entity()
 	{
 		super();
-		_portList = new HashMap <String, Port>();
+		_portList = new ArrayList <Port>();
 		_director = null;
 	}
 	
@@ -36,7 +34,7 @@ public abstract class Entity extends NamedObj
 	public Entity(String name, String className)
 	{
 		super(name, className);
-		_portList = new HashMap <String, Port>();
+		_portList = new ArrayList <Port>();
 	}
 	
 	/**
@@ -62,7 +60,7 @@ public abstract class Entity extends NamedObj
 	@SuppressWarnings("unchecked")
 	public void addPort(Port p) throws Exception
 	{
-		add(p, (HashMap<String, NamedObj>) _portList);
+		add(p,  (ArrayList<NamedObj>) _portList);
 	}
 	
 	/**
@@ -71,9 +69,9 @@ public abstract class Entity extends NamedObj
 	 * @throws Exception If you remove a non-existing port
 	 * */
 	@SuppressWarnings("unchecked")
-	public Port removePort(String name) throws Exception
+	public boolean removePort(Port obj) throws Exception
 	{
-		return (Port) remove (name, (HashMap<String, NamedObj>) _portList);
+		return remove (obj,  (ArrayList<NamedObj>) _portList);
 	}
 	
 	/**
@@ -85,7 +83,7 @@ public abstract class Entity extends NamedObj
 	@SuppressWarnings("unchecked")
 	public Port getPort(String name) throws Exception
 	{
-		return (Port) get(name, (HashMap<String, NamedObj>) _portList);
+		return (Port) get(name, (ArrayList<NamedObj>) _portList);
 	}
 	
 	/**
@@ -97,7 +95,7 @@ public abstract class Entity extends NamedObj
 	@SuppressWarnings("unchecked")
 	public boolean hasPort(String name) throws Exception
 	{
-		return contains(name, (HashMap<String, NamedObj>) _portList);
+		return contains(name,  (ArrayList<NamedObj>) _portList);
 	}
 
 	/**
@@ -107,7 +105,7 @@ public abstract class Entity extends NamedObj
 	@SuppressWarnings("unchecked")
 	public ArrayList<Port> portList()
 	{
-		return new ArrayList<Port>( (Collection<? extends Port>) _portList.values());
+		return (ArrayList<Port>) _portList;
 	}
 	
 	/**
@@ -128,12 +126,12 @@ public abstract class Entity extends NamedObj
 		this.addAttribute(new Attribute(d.getName(), d.getClassName()));
 	}
 	
-	public Director removeDirector() throws Exception
+	public boolean removeDirector() throws Exception
 	{
 		
-		Director d = (Director) this.removeAttribute(_director.getName());
+		boolean t = this.removeAttribute(_director);
 		_director = null;
-		return d;
+		return t;
 	}
 
 }

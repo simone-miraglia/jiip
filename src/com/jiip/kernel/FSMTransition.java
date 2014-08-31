@@ -1,7 +1,5 @@
 package com.jiip.kernel;
 
-import java.util.ArrayList;
-
 public class FSMTransition extends Relation
 {
 /**

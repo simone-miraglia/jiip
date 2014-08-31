@@ -2,7 +2,7 @@ package com.jiip.kernel;
 
 import java.util.ArrayList;
 
-public class FSM extends CompositeActor
+public class FSM extends CompositeEntity
 {
 
 	public FSM()
@@ -54,5 +54,11 @@ public class FSM extends CompositeActor
 		for (Relation r : this.relationList())
 			transitions.add((FSMTransition) r);
 		return transitions;
+	}
+
+	@Override
+	public boolean isAtomic()
+	{
+		return false;
 	}
 }

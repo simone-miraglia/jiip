@@ -44,12 +44,12 @@ public class Test2
 	public static void main(String[] args) throws Exception
 	{
 		CompositeActor model = new CompositeActor();
-		MoMLImporter importer = new MoMLImporter("/home/simone/Scrivania/prova.xml");
+		MoMLImporter importer = new MoMLImporter("/home/simone/Scrivania/RailroadControl.xml");
 		model = (CompositeActor) importer.load();
 		//visitModel(model, "");
 		
 		//CompositeEntity modalmodel = (CompositeEntity) model.getEntity("ModalModel");
-		FSM fsm = (FSM) model.getEntity("_Controller");
+		FSM fsm = (FSM) model.getEntity("Gate");
 		
 		System.out.println("states:");
 		for(FSMState s : fsm.stateList())

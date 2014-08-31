@@ -4,7 +4,6 @@
 package com.jiip.kernel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -65,8 +64,9 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	 * Could be useful both for check uniqueness of a given contained
 	 * NamedObj or to access fast all the contained NamedObjs
 	 * */
-	private HashMap<String, NamedObj> _containedObjList;
-	
+	//FIXME should allow multiple keys values array is better maybe
+//	private HashMap<String, NamedObj> _containedObjList;
+	private ArrayList<NamedObj> _containedObjList;
 	/**
 	 * A container for attributes. Search is by name.
 	 * */
@@ -77,13 +77,38 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	 * usage of add/remove/get methods regardless of the concrete
 	 * type (eg, Entity, Attribute, and so on).
 	 * */
-	private HashMap<String, ? extends NamedObj> _attributeList;
+	private ArrayList<? extends NamedObj> _attributeList;
 	
 	
 	/* ************************************************
 	 * **************** Methods ***********************
 	 * ************************************************
 	 * */
+	
+	/**
+	 * Check name existence within the contained NamedObj.
+	 * Useful to grant uniqueness.
+	 * @param 
+	 * @param container NamedObj in which check uniqueness
+	 * @return true if name already exists, false otherwise
+	 * */
+	protected boolean checkNameExistence(NamedObj obj, NamedObj container)
+	{
+		/*
+		 * To check name uniqueness, lookup in the list
+		 * of contained NamedObjs.
+		 * Return false (ie, a duplicate exists) iff two objects are of the same class
+		 * and their name are equals.
+		 * */
+		
+		for(NamedObj o : container._containedObjList)
+		{
+			if(o.getClass().equals(obj.getClass()))
+				if (o.getName().equals(obj.getName()))
+					return true;
+		}
+		return false;
+	}
 	
 	/**
 	 * Check name existence within the contained NamedObj.
@@ -97,15 +122,14 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 		/*
 		 * To check name uniqueness, lookup in the list
 		 * of contained NamedObjs.
-		 * If a null value is returned, no object with
-		 * the given name exists (so a caller function
-		 * could add an object with this name)
+		 * Return false (ie, a duplicate exists) iff two objects are of the same class
+		 * and their name are equals.
 		 * */
-		NamedObj obj = container._containedObjList.get(name);
-		if (obj == null)
-			return false;
-		else
-			return true;
+		
+		for(NamedObj o : container._containedObjList)
+			if (o.getName().equals(name))
+					return true;
+		return false;
 	}
 	
 	/**
@@ -117,8 +141,9 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	 * @throws Exception if an object of the container has the same
 	 * name of the given NamedObj
 	 * */
-	protected void add(NamedObj obj, HashMap<String, NamedObj> list) throws Exception
+	protected void add(NamedObj obj, ArrayList<NamedObj> list) throws Exception
 	{
+		//TODO description
 		/*
 		 * First check whether the given NamedObj is already added somewhere
 		 * (_container is not null) and raise an exception in case
@@ -133,18 +158,18 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 		 * To do so, check if already exists; if is not, can be added,
 		 * otherwise raise an Exception.
 		 * */
-		if (!checkNameExistence(obj.getName(), this))
+		if (!checkNameExistence(obj, this))
 		{
 			/*
 			 * If it is unique, then add the given obj.
 			 */
-			list.put(obj.getName(), obj);
+			list.add(obj);
 			
 			/*
 			 * Make the reference between this object (container) and 
 			 * the added NamedObj (contained)
 			 * */
-			_containedObjList.put(obj.getName(), obj);
+			_containedObjList.add(obj);
 			obj.setContainer(this);
 		}
 		else
@@ -158,33 +183,33 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	 * @return the removed NamedObj
 	 * @throws Exception if there is no element with such key inside the container
 	 * */
-	protected NamedObj remove(String key, HashMap<String, NamedObj> list) throws Exception
+	protected boolean remove(NamedObj obj, ArrayList<NamedObj> list) throws Exception
 	{
 		/*
 		 * First check whether a NamedObj with the given key actually exists.
 		 * Cannot remove a non-contained element.
 		 * */
-		NamedObj t = list.get(key);
+		//TODO description
 		
 		/*
 		 * If search returns a null value, then the given NamedObj is not contained
 		 * so raise an Exception.
 		 * Otherwise, it is and can be removed
 		 * */
-		if (t != null)
+		if (list.contains(obj))
 		{
 			/*
 			 * If it is contained, then remove
 			 * */
-			t = list.remove(key);
+			boolean t = list.remove(obj);
 			
 			/* and delete the reference between this NamedObj (container)
 			 * and t (contained)
 			 * (If it is contained ==> it also contained in _containedObjList,
 			 * so next remove is ok)
 			 * */
-			_containedObjList.remove(key); 
-			t.setContainer(null);
+			_containedObjList.remove(obj); 
+			obj.setContainer(null);
 			
 			/*
 			 * Eventually returns the removed NamedObj
@@ -202,16 +227,17 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	 * @return the searched NamedObj
 	 * @throws Exception if there is no element with such key inside the container
 	 * */
-	protected NamedObj get(String key, HashMap<String, NamedObj> list) throws Exception
+	protected NamedObj get(String key, ArrayList<NamedObj> list) throws Exception
 	{
+		//TODO description
 		/*
 		 * Just lookup in the list. Null value returned means there is
 		 * no NamedObj with the given key.
 		 * */
-		if (list.containsKey(key))
-			return list.get(key);
-		else
-			throw new Exception("Unable to get NamedObj. It does not exist.");
+		for(NamedObj o : list)
+			if (o.getName().equals(key))
+				return o;
+		throw new Exception("Unable to get NamedObj. It does not exist.");
 	}
 	
 	/**
@@ -221,9 +247,12 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	 * @return the searched NamedObj
 	 * @throws Exception if there is no element with such key inside the container
 	 * */
-	protected boolean contains(String key, HashMap<String, NamedObj> list)
+	protected boolean contains(String key, ArrayList<NamedObj>list)
 	{
-		return list.containsKey(key);
+		for(NamedObj o: list)
+			if(o.getName().equals(key))
+				return true;
+		return false;
 	}
 	
 	/**
@@ -234,8 +263,8 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 		_name = "";
 		_container = null;
 		_className = "";
-		_attributeList = new HashMap<String, Attribute>();
-		_containedObjList = new HashMap<String, NamedObj>();
+		_attributeList = new ArrayList<Attribute>();
+		_containedObjList = new ArrayList<NamedObj>();
 	}
 	
 	/**
@@ -248,8 +277,8 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 		_name = name;
 		_className = className;
 		_container = null;
-		_attributeList = new HashMap<String, Attribute>();
-		_containedObjList = new HashMap<String, NamedObj>();
+		_attributeList = new ArrayList<Attribute>();
+		_containedObjList = new ArrayList<NamedObj>();
 	}
 	
 	/**
@@ -332,7 +361,7 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	@SuppressWarnings("unchecked")
 	public void addAttribute(Attribute a) throws Exception
 	{
-		add(a, (HashMap<String, NamedObj>) _attributeList);
+		add(a, (ArrayList<NamedObj>) _attributeList);
 	}
 	
 	/**
@@ -341,9 +370,9 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	 * @throws Exception If you remove a non-existing attribute
 	 * */
 	@SuppressWarnings("unchecked")
-	public Attribute removeAttribute(String name) throws Exception
+	public boolean removeAttribute(Attribute obj) throws Exception
 	{
-		return (Attribute) remove (name, (HashMap<String, NamedObj>) _attributeList);
+		return  remove (obj, (ArrayList<NamedObj>) _attributeList);
 	}
 	
 	/**
@@ -355,7 +384,7 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	@SuppressWarnings("unchecked")
 	public Attribute getAttribute(String name) throws Exception
 	{
-		return (Attribute) get(name, (HashMap<String, NamedObj>) _attributeList);
+		return (Attribute) get(name, (ArrayList<NamedObj>) _attributeList);
 	}
 	
 	/**
@@ -366,7 +395,7 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	@SuppressWarnings("unchecked")
 	public boolean hasAttribute(String name)
 	{
-		return contains(name, (HashMap<String, NamedObj>) _attributeList);
+		return contains(name, (ArrayList<NamedObj>) _attributeList);
 	}
 	
 	
@@ -378,7 +407,7 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	@SuppressWarnings("unchecked")
 	public ArrayList<Attribute> attributeList()
 	{
-		return (ArrayList<Attribute>) _attributeList.values();
+		return (ArrayList<Attribute>) _attributeList;
 	}
 	
 	/**
@@ -388,7 +417,7 @@ public abstract class NamedObj implements Nameable, Exportable, Classable
 	 * */
 	public ArrayList<NamedObj> containedList()
 	{
-		return new ArrayList<NamedObj>(_containedObjList.values());
+		return _containedObjList;
 	}
 	
 	

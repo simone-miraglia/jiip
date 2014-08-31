@@ -58,28 +58,28 @@ public abstract class Port extends NamedObj
 	 * @param r The relation you want to unlink with.
 	 * @throws Exception If you unlink with a relation without this port
 	 * */
-	public void unlink(Relation r) throws Exception
+	/*public void unlink(Relation r) throws Exception
 	{
-		/*TODO: do not know if needed or should be implemented in Relation*/
+		TODO: do not know if needed or should be implemented in Relation
 		
-		/*
+		
 		 * First check whether port is contained in relation r
 		 * Cannot unlink from a Port non contained in a relation
-		 * */
-		Port t = r.getLinkedPortHashMap().get(this.getName());
+		 * 
+		//Port t = r.getLinkedPortHashMap().get(this.getName());
 		if (t != null)
 		{
-			/*
+			
 			 * If Port exists, then unlink
 			 * remove relation from to linked relation list
 			 * and remove port form relation linked port list
-			 * */
+			 * 
 			_linkedRelList.remove(r.getName());
-			r.getLinkedPortHashMap().remove(this.getName());
+			//r.getLinkedPortHashMap().remove(this.getName());
 		}
 		else
 			throw new Exception("DuplicateNameException: port non contained in given relation.");
-	}
+	}*/
 	
 	/**
 	 * Get a relation from the existing set of linked relations

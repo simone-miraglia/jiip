@@ -2,7 +2,7 @@ package com.jiip.kernel;
 
 import java.util.ArrayList;
 
-public class FSMState extends CompositeActor
+public class FSMState extends CompositeEntity
 {
 
 	public FSMState()
@@ -55,5 +55,12 @@ public class FSMState extends CompositeActor
 			e.printStackTrace();
 		}
 		return transitions;
+	}
+
+	@Override
+	public boolean isAtomic()
+	{
+		// TODO check num of refinements...
+		return false;
 	}
 }
