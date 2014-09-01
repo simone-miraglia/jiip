@@ -132,6 +132,8 @@ public abstract class CompositeEntity extends Entity
 		return (ArrayList<Relation>) _relList;
 	}
 	
+	
+	//TODO connect/disconnect?
 	/**
 	 * Connect two ports and returns the relation created
 	 * @param p a port to connect
@@ -141,7 +143,6 @@ public abstract class CompositeEntity extends Entity
 	 * */
 	/*public Relation connect (Port p, Port q) throws Exception
 	{
-	//TODO is it really necessary?
 		//TODO create unique relation name, now just static
 		*
 		 * Create a new unique relation, then link p and q to this
@@ -162,7 +163,6 @@ public abstract class CompositeEntity extends Entity
 	 * */
 	/*public Relation disconnect (Port p, Port q) throws Exception
 	{
-		//TODO
 		//find the relation that connect p and q!
 		return null;
 	}*/

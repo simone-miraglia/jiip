@@ -55,8 +55,8 @@ public class MoMLImporter
 				object = new CompositeActor(name, className);
 			
 			//it is a modal model
-			else if(className.endsWith("ModalModel"))
-				object = new CompositeActor(name, className);
+			else if(className.endsWith("ModalModel") || className.endsWith("ModalRefinement"))
+				object = new ModalModel(name, className);
 			
 			//it is a modal controller or FSMActor
 			else if(className.endsWith("ModalController") || className.endsWith("FSMActor"))
@@ -114,40 +114,40 @@ public class MoMLImporter
 	 */
 	private NamedObj visitMoML(Element node)
 	{
-		//Determine which is current MoML tag
-		//and create linked ptolemy object
-		NamedObj current = createNamedObj(node);
-		
-		//Null object can be returned whether current sub node
-		//is an hidden property (ie, _createdBy) or a link
-		if (current == null)
-			return null;
-		
-		//At this point, current obj is created
-		//Then we have to explore all its sub named objs
-		//and add them to current obj
-		
-		//Explore properties, entities, ports and relations related to this tag
-		NodeList childNodes = node.getChildNodes();
-		for(int i = 0; i < childNodes.getLength(); ++i)
+		try
 		{
-			Node n = childNodes.item(i);
+			//Determine which is current MoML tag
+			//and create linked ptolemy object
+			NamedObj current = createNamedObj(node);
 			
-			//Make sure it is an element node
-			if (n.getNodeType() == Node.ELEMENT_NODE)	
+			//Null object can be returned whether current sub node
+			//is an hidden property (ie, _createdBy) or a link
+			if (current == null)
+				return null;
+			
+			//At this point, current obj is created
+			//Then we have to explore all its sub named objs
+			//and add them to current obj
+			
+			//Explore properties, entities, ports and relations related to this tag
+			NodeList childNodes = node.getChildNodes();
+			for(int i = 0; i < childNodes.getLength(); ++i)
 			{
-				//This return a well-formed sub namedobj, ie an instanced named obj
-				//whit all its sub object added (and instanced)
-				NamedObj object = visitMoML( (Element) n);
+				Node n = childNodes.item(i);
 				
-				//Null object can be returned whether current sub node
-				//is an hidden property (ie, _createdBy) or a link
-				if(object != null)
+				//Make sure it is an element node
+				if (n.getNodeType() == Node.ELEMENT_NODE)	
 				{
-					//Then add the returned object to its parent
+					//This return a well-formed sub namedobj, ie an instanced named obj
+					//whit all its sub object added (and instanced)
+					NamedObj object = visitMoML( (Element) n);
 					
-					try
+					//Null object can be returned whether current sub node
+					//is an hidden property (ie, _createdBy) or a link
+					if(object != null)
 					{
+						//Then add the returned object to its parent
+						
 						//Check if is a simple attribute (but not a director)
 						if (object instanceof Attribute && !(object instanceof Director))
 								current.addAttribute((Attribute) object);
@@ -156,25 +156,11 @@ public class MoMLImporter
 							//If sub node is not a simple attribute
 							//its parent (ie current node) is surely an entity
 							Entity container = (Entity)current;
-								
+									
 							//if obj is an entity, current is a composite entity (so cast is needed)
 							if (object instanceof Entity)
-							{
-								//if obj is a state and has a refinement, must link obj with it
-								if (object instanceof FSMState)
-								{
-									FSMState state = (FSMState) object;
-									if(state.hasAttribute("refinementName"))
-									{
-										String refinementName = state.getAttribute("refinementName").getValue();
-										//FIXME create a list of "pending state", once found the refinement state,
-										//fix..
-									}
-									
-								}
 								((CompositeEntity) container).addEntity((Entity) object);
-							}
-							
+								
 							//if obj is a port, current could be atomic or composite
 							else if (object instanceof Port)
 								container.addPort((Port)object);
@@ -182,22 +168,53 @@ public class MoMLImporter
 							//if obj is a relation, current is a composite entity (so cast is needed)
 							else if (object instanceof Relation)
 								((CompositeEntity) container).addRelation((Relation) object);
-								
+									
 							//if obj is a director, current could be atomic or composite
 							else if (object instanceof Director)
 								container.addDirector((Director) object);
 						}
 					} 
-					catch (Exception e)
-					{
-						e.printStackTrace();
-					}
 				}
 			}
+			
+			//if obj is a ModalModel could have refinements, must link them
+			if (current instanceof ModalModel)
+			{
+				ModalModel modalModel = (ModalModel) current;
+				
+				//Get the actual FSM
+				FSM fsm = modalModel.getFSM();
+				
+				if(fsm != null) //should not be null
+				{
+					/*
+					 * For each state in fsm, check if state has a refinement
+					 * if so, link state with the actual implementation from refinementList
+					 * of parent ModalModel
+					 */
+					
+				for(FSMState state : fsm.stateList())
+					if(state.hasAttribute("refinementName"))
+					{
+						String refinementName = state.getAttribute("refinementName").getValue();
+						/*
+						 * Find refinement and add
+						 */
+						for(CompositeEntity e : modalModel.refinementList())
+							if(e.getName().equals(refinementName))
+								state.setRefinement(e);
+					}
+				}	
+			}
+			
+			return current;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
 		}
 		
-		return current;
-		
+		return null;		
 	}
 	
 	/**
@@ -314,7 +331,6 @@ public class MoMLImporter
 		
 	}
 	
-	
 	/**
 	 * Load the MoML file and create a new model.
 	 * @return the loaded model
@@ -323,13 +339,17 @@ public class MoMLImporter
 	{		
 		File fXmlFile = new File(_pathName);
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+
 		DocumentBuilder dBuilder;
 		Document doc;
 		try
 		{
 			/*
-			 * Read xml file
+			 * Read xml file (setValidating and setFeature to non validate dtd)
 			 */
+			dbFactory.setValidating(false);
+			dbFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+			
 			dBuilder = dbFactory.newDocumentBuilder();
 			doc = dBuilder.parse(fXmlFile);
 			doc.getDocumentElement().normalize();

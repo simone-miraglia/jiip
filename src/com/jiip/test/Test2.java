@@ -5,6 +5,7 @@ import com.jiip.kernel.FSM;
 import com.jiip.kernel.FSMState;
 import com.jiip.kernel.FSMTransition;
 import com.jiip.kernel.MoMLImporter;
+import com.jiip.kernel.ModalModel;
 import com.jiip.kernel.NamedObj;
 import com.jiip.kernel.Port;
 import com.jiip.kernel.Attribute;
@@ -47,24 +48,44 @@ public class Test2
 	
 	public static void main(String[] args) throws Exception
 	{
-		CompositeActor model = new CompositeActor();
-		MoMLImporter importer = new MoMLImporter("/home/simone/Scrivania/RailroadControl.xml");
-		model = (CompositeActor) importer.load();
+		ModalModel model = new ModalModel();
+		MoMLImporter importer = new MoMLImporter("/home/simone/Scrivania/prova.xml");
+		model = (ModalModel) importer.load();
 		
 		//visitModel(model, "");
 		
-		//CompositeEntity modalmodel = (CompositeEntity) model.getEntity("ModalModel");
-		FSM fsm = (FSM) model.getEntity("Train");
+		//ModalModel mm = (ModalModel) model.getEntity("ModalModel");
+		FSM fsm = model.getFSM();
 		
 		System.out.println("states:");
 		for(FSMState s : fsm.stateList())
+		{
 			System.out.println(s.getName());
+			if (s.hasRefinement())
+				if (s.getRefinement() instanceof ModalModel)
+				{
+					FSM fsm2 = ((ModalModel)s.getRefinement()).getFSM();
+					
+					System.out.println("  states:");
+					for(FSMState q : fsm2.stateList())
+						System.out.println("  " + q.getName());
+					
+					System.out.println("");
+					
+					
+					System.out.println("  transitions:");
+					for(FSMTransition t : fsm2.transitionList())
+						System.out.println("  " + t.getIncomingState().getName() + " -> " + t.getOutgoingState().getName() + "(" + t.getGuardExpression() + ")");
+				}
+		}
 		
 		System.out.println("");
 		
 		System.out.println("transitions:");
 		for(FSMTransition t : fsm.transitionList())
-			System.out.println(t.getIncomingState().getName() + " -> " + t.getOutgoingState().getName() + "("+t.getGuardExpression()+")");
+			System.out.println(t.getIncomingState().getName() + " -> " + t.getOutgoingState().getName() + "(" + t.getGuardExpression() + ")");
+		
+		
 	}
 
 }
